@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinGuide | פלטפורמת ליווי פיננסי מקצועית</title>
+  
+    <!-- PWA & Mobile Web App Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FinGuide">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="description" content="FinGuide - פלטפורמת ליווי ומעקב פיננסי מקצועית">
+  <!-- Fonts & CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      /* Refined Fintech Palette */
+      --primary: #4f46e5;         /* Indigo 600 */
+      --primary-hover: #4338ca;   /* Indigo 700 */
+      --primary-light: #eef2ff;   /* Indigo 50 */
+      --primary-border: #c7d2fe;
+      
+      --emerald: #059669;         /* Emerald 600 (Surplus / Income) */
+      --emerald-hover: #047857;
+      --emerald-light: #ecfdf5;   /* Emerald 50 */
+      --emerald-border: #a7f3d0;
+      
+      --rose: #e11d48;            /* Rose 600 (Expense / Deficit) */
+      --rose-light: #fff1f2;      /* Rose 50 */
+      --rose-border: #fecdd3;
+      
+      --amber: #d97706;          /* Amber 600 (Savings / Warnings) */
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+
+      --slate-900: #0f172a;       /* Dark text */
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;       /* Muted text */
+      --slate-400: #94a3b8;
+      --slate-200: #e2e8f0;       /* Borders */
+      --slate-100: #f1f5f9;       /* Light backgrounds */
+      --slate-50: #f8fafc;        /* App background */
+      
+      --card-bg: #ffffff;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Assistant', 'Rubik', sans-serif;
+    }
+
+    body {
+      background-color: var(--slate-50);
+      color: var(--slate-900);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* SVG Icon Utility */
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .icon-sm { width: 15px; height: 15px; }
+    .icon-lg { width: 22px; height: 22px; }
+
+    /* Top Navigation */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--slate-200);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon-box {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--slate-500);
+      font-weight: 500;
+    }
+
+    .client-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--slate-100);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--slate-200);
+    }
+
+    .client-select-wrapper label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-600);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select, input, textarea {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--slate-900);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-emerald {
+      background: var(--emerald);
+      color: white;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    }
+    .btn-emerald:hover {
+      background: var(--emerald-hover);
+    }
+
+    .btn-outline {
+      background: var(--card-bg);
+      border-color: var(--slate-200);
+      color: var(--slate-700);
+    }
+    .btn-outline:hover {
+      background: var(--slate-100);
+      border-color: var(--slate-300);
+      color: var(--slate-900);
+    }
+
+    .btn-subtle {
+      background: transparent;
+      color: var(--slate-600);
+    }
+    .btn-subtle:hover {
+      background: var(--slate-100);
+      color: var(--slate-900);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    .btn-pill {
+      border-radius: var(--radius-full);
+    }
+
+    .btn-danger {
+      background: var(--rose-light);
+      color: var(--rose);
+      border-color: var(--rose-border);
+    }
+    .btn-danger:hover {
+      background: #ffe4e6;
+    }
+
+    /* Client Profile Hero Banner */
+    .hero-banner {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-bottom: 1px solid var(--slate-200);
+      padding: 20px 24px;
+    }
+
+    .hero-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .client-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .client-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      border: 2px solid white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .client-details h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-chip {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-chip.surplus {
+      background: var(--emerald-light);
+      color: #065f46;
+      border: 1px solid var(--emerald-border);
+    }
+    .status-chip.deficit {
+      background: var(--rose-light);
+      color: #9f1239;
+      border: 1px solid var(--rose-border);
+    }
+
+    .client-meta-chips {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--slate-500);
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .meta-chip strong {
+      color: var(--slate-800);
+      font-weight: 600;
+    }
+
+    /* Tabs Bar (Modern Segmented / Pill style) */
+    .tabs-wrapper {
+      max-width: 1400px;
+      margin: 18px auto 0;
+      padding: 0 24px;
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .tab-pill {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--slate-500);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .tab-pill:hover {
+      color: var(--slate-800);
+    }
+
+    .tab-pill.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1400px;
+      width: 100%;
+      margin: 24px auto 40px;
+      padding: 0 24px;
+      flex: 1;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* KPI Cards Grid */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .kpi-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-500);
+      margin-bottom: 6px;
+    }
+
+    .kpi-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .kpi-subtext {
+      font-size: 12px;
+      color: var(--slate-500);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-badge-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .badge-income { background: var(--emerald-light); color: var(--emerald); }
+    .badge-expense { background: var(--rose-light); color: var(--rose); }
+    .badge-net { background: var(--primary-light); color: var(--primary); }
+    .badge-rate { background: var(--amber-light); color: var(--amber); }
+
+    .val-surplus { color: var(--emerald) !important; }
+    .val-deficit { color: var(--rose) !important; }
+
+    /* Month Controller Bar */
+    .month-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-xs);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .month-stepper {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .current-month-display {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--slate-900);
+      min-width: 140px;
+      text-align: center;
+    }
+
+    /* Two-column Budget Layout */
+    .tables-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 1100px) {
+      .tables-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .budget-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .budget-section-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--slate-50);
+    }
+
+    .budget-section-header h3 {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--slate-900);
+    }
+
+    /* Category Blocks & Tables */
+    .category-group {
+      border-bottom: 1px solid var(--slate-200);
+    }
+    .category-group:last-child {
+      border-bottom: none;
+    }
+
+    .category-group-header {
+      background: #fafbfc;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-700);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .cat-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cat-icon-chip {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .budget-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .budget-table th {
+      text-align: right;
+      padding: 8px 16px;
+      background: #f8fafc;
+      color: var(--slate-500);
+      font-weight: 700;
+      font-size: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .budget-table td {
+      padding: 10px 16px;
+      border-top: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .budget-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    .budget-table input[type="number"] {
+      width: 105px;
+      padding: 5px 10px;
+      text-align: left;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+
+    .variance-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .variance-tag.positive {
+      background: var(--emerald-light);
+      color: #065f46;
+    }
+    .variance-tag.negative {
+      background: var(--rose-light);
+      color: #9f1239;
+    }
+
+    /* Action Plan & Checklist */
+    .plan-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .plan-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .plan-card-header h3 {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      background: var(--card-bg);
+      transition: all 0.2s;
+    }
+
+    .task-row:hover {
+      border-color: var(--slate-300);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .task-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-900);
+    }
+
+    .task-done .task-text {
+      text-decoration: line-through;
+      color: var(--slate-400);
+    }
+
+    .task-meta-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--slate-100);
+      color: var(--slate-600);
+    }
+
+    /* Progress Goal Box */
+    .goal-box {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .goal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .goal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+
+    .goal-progress-bar {
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--slate-200);
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .goal-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4f46e5, #06b6d4);
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+
+    /* Modals with Glassmorphism */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 520px;
+      padding: 26px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--slate-200);
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header-row h3 {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--slate-700);
+    }
+
+    .field-group input, .field-group select, .field-group textarea {
+      width: 100%;
+    }
+
+    /* Trends Charts Layout */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 960px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-box {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-box h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  
+    /* Login Screen Overlay */
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .login-card-box {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 20px;
+      padding: 36px 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      position: relative;
+    }
+
+    .login-badge {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.35);
+    }
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 6px;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--slate-500);
+      margin-bottom: 24px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen Login Security Screen -->
+  <div class="login-overlay" id="loginScreen">
+    <div class="login-card-box">
+      <div class="login-badge">
+        <svg class="icon icon-lg" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h2 class="login-title">FinGuide</h2>
+      <p class="login-subtitle">כניסה למערכת ליווי ומעקב פיננסי</p>
+      
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="field-group" style="text-align: right;">
+          <label for="loginPasswordInput">קוד גישה / סיסמת כניסה:</label>
+          <input type="password" id="loginPasswordInput" placeholder="הזן סיסמה..." required autofocus style="padding: 10px 14px; font-size: 15px; text-align: center; letter-spacing: 2px;">
+        </div>
+        <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 12px; display: none;">
+          סיסמה שגויה, נסה שוב.
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 11px; font-size: 15px; border-radius: 10px; font-weight: 700;">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          כניסה למערכת
+        </button>
+        <div style="font-size: 12px; color: var(--slate-400); margin-top: 18px; line-height: 1.5;">
+          סיסמת ברירת מחדל ראשונית: <strong style="color: var(--primary);">1234</strong><br>
+          (ניתן לשנות את הסיסמה בהגדרות המערכת בכל עת)
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Navigation Bar -->
+  <header>
+    <div class="nav-container">
+      <div class="brand-section">
+        <div class="brand-icon-box">
+          <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>FinGuide</h1>
+          <p>ניהול, ליווי ומעקב פיננסי מקצועי</p>
+        </div>
+      </div>
+
+      <div class="client-select-wrapper">
+        <label for="clientSelect">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          תיק לקוח:
+        </label>
+        <select id="clientSelect" onchange="switchClient(this.value)"></select>
+        <button class="btn btn-primary btn-sm btn-pill" onclick="openNewClientModal()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          לקוח חדש
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn btn-subtle btn-sm" onclick="promptChangePassword()" title="שינוי סיסמת כניסה">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          שינוי סיסמה
+        </button>
+        <button class="btn btn-subtle btn-sm" onclick="handleLogout()" title="התנתקות ונעילת המערכת">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          נעילה / יציאה
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="exportData()" title="שמירת קובץ גיבוי של כל הנתונים">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          גיבוי JSON
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="טעינת קובץ גיבוי">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          שחזור
+        </button>
+        <input type="file" id="fileInput" style="display:none" onchange="importData(event)" accept=".json">
+        <button class="btn btn-subtle btn-sm" onclick="resetToDemoData()" title="איפוס לנתוני הדוגמה">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          איפוס דוגמה
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Client Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-inner">
+      <div class="client-card-header">
+        <div class="client-avatar" id="bannerAvatar">כ</div>
+        <div class="client-details">
+          <h2>
+            <span id="bannerClientName">משפחת כהן (דן ומיכל)</span>
+            <span id="bannerClientStatus" class="status-chip surplus">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              עודף תזרימי שוטף
+            </span>
+          </h2>
+          <div class="client-meta-chips">
+            <span class="meta-chip">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              תחילת ליווי: <strong id="bannerStartDate">01/06/2026</strong>
+            </span>
+            <span class="meta-chip">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              טלפון: <strong id="bannerPhone">054-7654321</strong>
+            </span>
+            <span class="meta-chip">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              פגישה קרובה: <strong id="bannerNextMeeting">15/09/2026</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button class="btn btn-outline btn-sm" onclick="editClientInfo()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          ערוך פרטי לקוח
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Segmented Navigation Tabs -->
+  <div class="tabs-wrapper">
+    <button class="tab-pill active" onclick="setTab('tab-budget', this)">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      מעקב חודשי ותזרים
+    </button>
+    <button class="tab-pill" onclick="setTab('tab-trends', this)">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      מגמות והשוואת חודשים
+    </button>
+    <button class="tab-pill" onclick="setTab('tab-goals', this)">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      יעדים ומשימות לפגישה
+    </button>
+    <button class="tab-pill" onclick="setTab('tab-baseline', this)">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+      תמונת פתיחה ונכסים
+    </button>
+  </div>
+
+  <!-- Main Content Areas -->
+  <main>
+    
+    <!-- TAB 1: BUDGET & CASH FLOW -->
+    <div id="tab-budget" class="tab-pane active">
+      
+      <!-- Month Stepper Bar -->
+      <div class="month-bar">
+        <div class="month-stepper">
+          <button class="btn btn-outline btn-sm" onclick="changeMonth(-1)">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            חודש קודם
+          </button>
+          <div class="current-month-display" id="currentMonthLabel">ספטמבר 2026</div>
+          <button class="btn btn-outline btn-sm" onclick="changeMonth(1)">
+            חודש הבא
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+        <div>
+          <button class="btn btn-outline btn-sm" onclick="copyFromPreviousMonth()">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            שכפל יעדים מחודש קודם
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Cards -->
+      <div class="kpi-row">
+        <!-- Income KPI -->
+        <div class="kpi-card">
+          <div class="kpi-content">
+            <span class="kpi-label">סך כל ההכנסות</span>
+            <div class="kpi-number" id="kpiTotalIncome">₪0</div>
+            <div class="kpi-subtext">
+              <span id="kpiIncomeCount">מקורות הכנסה שוטפים</span>
+            </div>
+          </div>
+          <div class="kpi-badge-icon badge-income">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+        </div>
+
+        <!-- Expense KPI -->
+        <div class="kpi-card">
+          <div class="kpi-content">
+            <span class="kpi-label">סך הוצאות בפועל</span>
+            <div class="kpi-number" id="kpiTotalExpense">₪0</div>
+            <div class="kpi-subtext">
+              תקציב יעד: <strong id="kpiPlannedExpense">₪0</strong>
+            </div>
+          </div>
+          <div class="kpi-badge-icon badge-expense">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+          </div>
+        </div>
+
+        <!-- Net Cashflow KPI -->
+        <div class="kpi-card">
+          <div class="kpi-content">
+            <span class="kpi-label">תזרים נטו (עודף / גירעון)</span>
+            <div class="kpi-number" id="kpiNetCashflow">₪0</div>
+            <div class="kpi-subtext">
+              הכנסות פחות הוצאות
+            </div>
+          </div>
+          <div class="kpi-badge-icon badge-net">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+          </div>
+        </div>
+
+        <!-- Savings Rate KPI -->
+        <div class="kpi-card">
+          <div class="kpi-content">
+            <span class="kpi-label">שיעור חיסכון</span>
+            <div class="kpi-number" id="kpiSavingsRate">0%</div>
+            <div class="kpi-subtext">
+              מתוך סך ההכנסות
+            </div>
+          </div>
+          <div class="kpi-badge-icon badge-rate">
+            <svg class="icon icon-lg" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Tables -->
+      <div class="tables-layout">
+        
+        <!-- INCOMES -->
+        <div class="budget-section">
+          <div class="budget-section-header">
+            <h3>
+              <svg class="icon" style="color: var(--emerald);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>
+              פירוט הכנסות חודשיות
+            </h3>
+            <button class="btn btn-emerald btn-sm" onclick="openAddRowModal('income')">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              הוסף סעיף הכנסה
+            </button>
+          </div>
+          <div id="incomeCategoriesContainer"></div>
+        </div>
+
+        <!-- EXPENSES -->
+        <div class="budget-section">
+          <div class="budget-section-header">
+            <h3>
+              <svg class="icon" style="color: var(--rose);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+              פירוט הוצאות חודשיות
+            </h3>
+            <button class="btn btn-primary btn-sm" onclick="openAddRowModal('expense')">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              הוסף סעיף הוצאה
+            </button>
+          </div>
+          <div id="expenseCategoriesContainer"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: TRENDS & ANALYTICS -->
+    <div id="tab-trends" class="tab-pane">
+      <div class="charts-row">
+        <div class="chart-box">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+            מגמת תזרים רב-חודשית (הכנסות מול הוצאות ותזרים נטו)
+          </h3>
+          <div style="position: relative; height: 320px;">
+            <canvas id="cashflowTrendChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            התפלגות הוצאות לפי קטגוריות
+          </h3>
+          <div style="position: relative; height: 320px;">
+            <canvas id="categoryPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="budget-section">
+        <div class="budget-section-header">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            השוואת נתוני ליווי חודשיים
+          </h3>
+        </div>
+        <div style="padding: 16px; overflow-x: auto;">
+          <table class="budget-table" id="multiMonthTable">
+            <thead>
+              <tr>
+                <th>חודש</th>
+                <th>הכנסות בפועל</th>
+                <th>הוצאות בפועל</th>
+                <th>תזרים נטו</th>
+                <th>עמידה ביעד תקציבי</th>
+                <th>שיעור חיסכון</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: GOALS & TASKS -->
+    <div id="tab-goals" class="tab-pane">
+      <div class="tables-layout">
+        
+        <!-- Action Items -->
+        <div class="plan-card">
+          <div class="plan-card-header">
+            <h3>
+              <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              משימות ופעולות לפגישה הבאה
+            </h3>
+            <button class="btn btn-primary btn-sm" onclick="openAddTaskModal()">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              משימה חדשה
+            </button>
+          </div>
+          <div id="tasksList"></div>
+        </div>
+
+        <!-- Long Term Goals & Coach Notes -->
+        <div>
+          <div class="plan-card">
+            <div class="plan-card-header">
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                יעדים פיננסיים מרכזיים בתהליך
+              </h3>
+              <button class="btn btn-primary btn-sm" onclick="openAddGoalModal()">
+                <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                יעד חדש
+              </button>
+            </div>
+            <div id="goalsList"></div>
+          </div>
+
+          <div class="plan-card">
+            <div class="plan-card-header">
+              <h3>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+                סיכום פגישה אחרונה והערות מלווה
+              </h3>
+              <span id="notesSaveIndicator" style="font-size: 11px; font-weight: 700; color: var(--emerald); display: none;">נשמר אוטומטית</span>
+            </div>
+            <textarea id="mentorNotesArea" rows="6" style="width: 100%; border-radius: 8px;" placeholder="רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב..." oninput="saveClientNotes()"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: BASELINE SNAPSHOT -->
+    <div id="tab-baseline" class="tab-pane">
+      <div class="plan-card" style="max-width: 820px; margin: 0 auto;">
+        <div class="plan-card-header">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="9" x2="9" y1="21" y2="9"/></svg>
+            תמונת פתיחה לליווי (Baseline Snapshot)
+          </h3>
+        </div>
+        <p style="color: var(--slate-500); font-size: 13px; margin-bottom: 22px;">
+          תיעוד המצב הראשוני שבו הלקוח התחיל את הליווי. נתונים אלו מהווים נקודת ייחוס להערכת השיפור וסגירת הפערים לאורך הזמן.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px;">
+          <div class="field-group">
+            <label>סך חובות והלוואות בתחילת הדרך (₪):</label>
+            <input type="number" id="baseDebts" onchange="updateBaselineData()">
+          </div>
+          <div class="field-group">
+            <label>יתרת עו"ש / מינוס פתיחה (₪):</label>
+            <input type="number" id="baseOverdraft" onchange="updateBaselineData()">
+          </div>
+          <div class="field-group">
+            <label>חסכונות נזילים וקרן חירום בפתיחה (₪):</label>
+            <input type="number" id="baseSavings" onchange="updateBaselineData()">
+          </div>
+          <div class="field-group">
+            <label>שווי נכסים והשקעות בפתיחה (₪):</label>
+            <input type="number" id="baseAssets" onchange="updateBaselineData()">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>סיבת הפנייה לליווי והאתגר המרכזי של המשפחה:</label>
+          <textarea id="baseChallenge" rows="3" onchange="updateBaselineData()"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>חזון הלקוח (איפה הם שואפים להיות בעוד שנתיים):</label>
+          <textarea id="baseVision" rows="3" onchange="updateBaselineData()"></textarea>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Client Add/Edit -->
+  <div class="modal-backdrop" id="clientModal">
+    <div class="modal-window">
+      <div class="modal-header-row">
+        <h3 id="clientModalTitle">הוספת לקוח חדש</h3>
+        <button class="btn btn-subtle btn-sm" onclick="closeModal('clientModal')">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="field-group">
+        <label>שם הלקוח / המשפחה:</label>
+        <input type="text" id="modalClientName" placeholder="למשל: משפחת לוי / דן שפירא">
+      </div>
+      <div class="field-group">
+        <label>טלפון:</label>
+        <input type="text" id="modalClientPhone" placeholder="050-0000000">
+      </div>
+      <div class="field-group">
+        <label>דוא"ל:</label>
+        <input type="email" id="modalClientEmail" placeholder="client@example.com">
+      </div>
+      <div class="field-group">
+        <label>תאריך תחילת ליווי:</label>
+        <input type="date" id="modalClientStartDate">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
+        <button class="btn btn-outline" onclick="closeModal('clientModal')">ביטול</button>
+        <button class="btn btn-primary" onclick="saveClientModal()">שמור לקוח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Item (Income/Expense) -->
+  <div class="modal-backdrop" id="itemModal">
+    <div class="modal-window">
+      <div class="modal-header-row">
+        <h3 id="itemModalTitle">הוספת סעיף</h3>
+        <button class="btn btn-subtle btn-sm" onclick="closeModal('itemModal')">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <input type="hidden" id="modalItemType">
+      <div class="field-group">
+        <label>קטגוריה:</label>
+        <select id="modalItemCategory"></select>
+      </div>
+      <div class="field-group">
+        <label>שם הסעיף:</label>
+        <input type="text" id="modalItemName" placeholder="למשל: סופרמרקט / שכר עבודה נטו">
+      </div>
+      <div class="field-group" id="modalPlannedGroup">
+        <label>תקציב יעד מתוכנן לחודש זה (₪):</label>
+        <input type="number" id="modalItemPlanned" value="0">
+      </div>
+      <div class="field-group" id="modalActualGroup">
+        <label id="modalActualLabel">סכום בפועל שבוצע (₪):</label>
+        <input type="number" id="modalItemActual" value="0">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
+        <button class="btn btn-outline" onclick="closeModal('itemModal')">ביטול</button>
+        <button class="btn btn-primary" onclick="saveItemModal()">הוסף סעיף</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Task -->
+  <div class="modal-backdrop" id="taskModal">
+    <div class="modal-window">
+      <div class="modal-header-row">
+        <h3>הוספת משימה לפגישה הבאה</h3>
+        <button class="btn btn-subtle btn-sm" onclick="closeModal('taskModal')">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="field-group">
+        <label>תיאור המשימה:</label>
+        <input type="text" id="modalTaskTitle" placeholder="למשל: בדיקת כפל ביטוחים באתר הר הביטוח">
+      </div>
+      <div class="field-group">
+        <label>אחראי ביצוע:</label>
+        <select id="modalTaskOwner">
+          <option value="הלקוח">הלקוח</option>
+          <option value="המלווה">המלווה</option>
+          <option value="משותף">משותף</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>יעד לביצוע (תאריך):</label>
+        <input type="date" id="modalTaskDate">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
+        <button class="btn btn-outline" onclick="closeModal('taskModal')">ביטול</button>
+        <button class="btn btn-primary" onclick="saveTaskModal()">הוסף משימה</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Goal -->
+  <div class="modal-backdrop" id="goalModal">
+    <div class="modal-window">
+      <div class="modal-header-row">
+        <h3>הגדרת יעד פיננסי מרכזי</h3>
+        <button class="btn btn-subtle btn-sm" onclick="closeModal('goalModal')">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="field-group">
+        <label>שם היעד:</label>
+        <input type="text" id="modalGoalTitle" placeholder="למשל: סגירת הלוואת רכב / יצירת קרן חירום">
+      </div>
+      <div class="field-group">
+        <label>סכום יעד (₪):</label>
+        <input type="number" id="modalGoalTargetAmount" placeholder="25000">
+      </div>
+      <div class="field-group">
+        <label>סכום שנצבר / נסגר עד כה (₪):</label>
+        <input type="number" id="modalGoalCurrentAmount" placeholder="5000">
+      </div>
+      <div class="field-group">
+        <label>תאריך יעד:</label>
+        <input type="date" id="modalGoalTargetDate">
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
+        <button class="btn btn-outline" onclick="closeModal('goalModal')">ביטול</button>
+        <button class="btn btn-primary" onclick="saveGoalModal()">שמור יעד</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    const STORAGE_KEY = 'finguide_data_v1';
+
+    // Category styling & icons
+    const CATEGORY_ICONS = {
+      'משכורות ושכר עבודה': '💼',
+      'הכנסות מעסק ועצמאי': '🏢',
+      'קצבאות ותמיכות ממשלתיות': '🏛️',
+      'הכנסות פסיביות והשקעות': '📈',
+      'הכנסות שונות וחד-פעמיות': '✨',
+      
+      'דיור ואחזקת בית': '🏠',
+      'מזון ומחיה שוטפת': '🛒',
+      'תחבורה ורכב': '🚗',
+      'חינוך, ילדים ומשפחה': '🎓',
+      'בריאות וביטוחים': '🏥',
+      'הלוואות והתחייבויות': '💳',
+      'פנאי, איכות חיים ותקשורת': '☕',
+      'חיסכון והשקעות': '💰',
+      'הוצאות עונתיות ובלתי צפויות': '🎁'
+    };
+
+    const DEFAULT_CATEGORIES = {
+      income: [
+        'משכורות ושכר עבודה',
+        'הכנסות מעסק ועצמאי',
+        'קצבאות ותמיכות ממשלתיות',
+        'הכנסות פסיביות והשקעות',
+        'הכנסות שונות וחד-פעמיות'
+      ],
+      expense: [
+        'דיור ואחזקת בית',
+        'מזון ומחיה שוטפת',
+        'תחבורה ורכב',
+        'חינוך, ילדים ומשפחה',
+        'בריאות וביטוחים',
+        'הלוואות והתחייבויות',
+        'פנאי, איכות חיים ותקשורת',
+        'חיסכון והשקעות',
+        'הוצאות עונתיות ובלתי צפויות'
+      ]
+    };
+
+    const DEMO_STATE = {
+      activeClientId: 'client_1',
+      activeMonth: '2026-09',
+      clients: [
+        {
+          id: 'client_1',
+          name: 'משפחת כהן (דן ומיכל)',
+          phone: '054-7654321',
+          email: 'cohen.family@example.com',
+          startDate: '2026-06-01',
+          nextMeeting: '2026-09-15',
+          notes: 'בפגישה האחרונה התמקדנו בהוזלת ביטוחים וסגירת חריגת מסעדות. המשפחה עמדה יפה ביעד הסופר החודש.',
+          baseline: {
+            debts: 45000,
+            overdraft: 12000,
+            savings: 5000,
+            assets: 350000,
+            challenge: 'חריגה חודשית עקבית של 2,500 ש"ח ומינוס כרוני בעו"ש.',
+            vision: 'איזון תזרימי מלא תוך חצי שנה, סגירת ההלוואות ובניית קרן חירום של 3 חודשי מחיה.'
+          },
+          goals: [
+            { id: 'g1', title: 'סגירת הלוואה צרכנית בנקאית', targetAmount: 25000, currentAmount: 18000, targetDate: '2026-12-31' },
+            { id: 'g2', title: 'בניית קרן חירום ל-3 חודשים', targetAmount: 30000, currentAmount: 8500, targetDate: '2027-03-31' }
+          ],
+          tasks: [
+            { id: 't1', title: 'להתקשר לסוכנות הביטוח לבטל כפל ביטוחי בריאות', owner: 'הלקוח', targetDate: '2026-09-12', completed: true },
+            { id: 't2', title: 'להעביר 500 ש"ח בהוראת קבע לחשבון חיסכון נפרד', owner: 'הלקוח', targetDate: '2026-09-14', completed: false },
+            { id: 't3', title: 'הכנת סימולציה למחזור הלוואת רכב לריבית פריים נמוכה', owner: 'המלווה', targetDate: '2026-09-15', completed: false }
+          ],
+          months: {
+            '2026-07': {
+              income: [
+                { id: 'i1', category: 'משכורות ושכר עבודה', name: 'משכורת דן (נטו)', planned: 13500, actual: 13500 },
+                { id: 'i2', category: 'משכורות ושכר עבודה', name: 'משכורת מיכל (נטו)', planned: 9500, actual: 9500 },
+                { id: 'i3', category: 'קצבאות ותמיכות ממשלתיות', name: 'קצבת ילדים (ביטוח לאומי)', planned: 320, actual: 320 }
+              ],
+              expense: [
+                { id: 'e1', category: 'דיור ואחזקת בית', name: 'משכנתה חודשית', planned: 5800, actual: 5800 },
+                { id: 'e2', category: 'דיור ואחזקת בית', name: 'ארנונה + מים + חשמל', planned: 1600, actual: 1750 },
+                { id: 'e3', category: 'מזון ומחיה שוטפת', name: 'קניות סופרמרקט', planned: 3800, actual: 4400 },
+                { id: 'e4', category: 'מזון ומחיה שוטפת', name: 'מסעדות ובתי קפה', planned: 1000, actual: 1650 },
+                { id: 'e5', category: 'תחבורה ורכב', name: 'דלק וביטוחים לרכב', planned: 2200, actual: 2350 },
+                { id: 'e6', category: 'חינוך, ילדים ומשפחה', name: 'צהרונים וחוגים', planned: 2800, actual: 2800 },
+                { id: 'e7', category: 'הלוואות והתחייבויות', name: 'החזר הלוואה בנקאית', planned: 1800, actual: 1800 },
+                { id: 'e8', category: 'פנאי, איכות חיים ותקשורת', name: 'סלולר, נטפליקס ואינטרנט', planned: 450, actual: 480 },
+                { id: 'e9', category: 'חיסכון והשקעות', name: 'חיסכון לילדים', planned: 500, actual: 500 }
+              ]
+            },
+            '2026-08': {
+              income: [
+                { id: 'i1', category: 'משכורות ושכר עבודה', name: 'משכורת דן (נטו)', planned: 13500, actual: 14200 },
+                { id: 'i2', category: 'משכורות ושכר עבודה', name: 'משכורת מיכל (נטו)', planned: 9500, actual: 9500 },
+                { id: 'i3', category: 'קצבאות ותמיכות ממשלתיות', name: 'קצבת ילדים (ביטוח לאומי)', planned: 320, actual: 320 }
+              ],
+              expense: [
+                { id: 'e1', category: 'דיור ואחזקת בית', name: 'משכנתה חודשית', planned: 5800, actual: 5800 },
+                { id: 'e2', category: 'דיור ואחזקת בית', name: 'ארנונה + מים + חשמל', planned: 1600, actual: 1550 },
+                { id: 'e3', category: 'מזון ומחיה שוטפת', name: 'קניות סופרמרקט', planned: 3800, actual: 3950 },
+                { id: 'e4', category: 'מזון ומחיה שוטפת', name: 'מסעדות ובתי קפה', planned: 800, actual: 950 },
+                { id: 'e5', category: 'תחבורה ורכב', name: 'דלק וביטוחים לרכב', planned: 2200, actual: 2100 },
+                { id: 'e6', category: 'חינוך, ילדים ומשפחה', name: 'צהרונים וחוגים', planned: 2800, actual: 2800 },
+                { id: 'e7', category: 'הלוואות והתחייבויות', name: 'החזר הלוואה בנקאית', planned: 1800, actual: 1800 },
+                { id: 'e8', category: 'פנאי, איכות חיים ותקשורת', name: 'סלולר, נטפליקס ואינטרנט', planned: 450, actual: 420 },
+                { id: 'e9', category: 'חיסכון והשקעות', name: 'חיסכון לילדים + קרן חירום', planned: 1000, actual: 1000 }
+              ]
+            },
+            '2026-09': {
+              income: [
+                { id: 'i1', category: 'משכורות ושכר עבודה', name: 'משכורת דן (נטו)', planned: 13500, actual: 13500 },
+                { id: 'i2', category: 'משכורות ושכר עבודה', name: 'משכורת מיכל (נטו)', planned: 9500, actual: 9500 },
+                { id: 'i3', category: 'קצבאות ותמיכות ממשלתיות', name: 'קצבת ילדים', planned: 320, actual: 320 },
+                { id: 'i4', category: 'הכנסות מעסק ועצמאי', name: 'הרצאה פרטית דן', planned: 1200, actual: 1500 }
+              ],
+              expense: [
+                { id: 'e1', category: 'דיור ואחזקת בית', name: 'משכנתה חודשית', planned: 5800, actual: 5800 },
+                { id: 'e2', category: 'דיור ואחזקת בית', name: 'ארנונה, חשמל ומים', planned: 1500, actual: 1450 },
+                { id: 'e3', category: 'מזון ומחיה שוטפת', name: 'קניות סופרמרקט', planned: 3700, actual: 3600 },
+                { id: 'e4', category: 'מזון ומחיה שוטפת', name: 'מסעדות ובילויים', planned: 700, actual: 650 },
+                { id: 'e5', category: 'תחבורה ורכב', name: 'דלק ואחזקת רכב', planned: 2000, actual: 1950 },
+                { id: 'e6', category: 'חינוך, ילדים ומשפחה', name: 'צהרונים, בי"ס וחוגים', planned: 3100, actual: 3100 },
+                { id: 'e7', category: 'בריאות וביטוחים', name: 'ביטוחי בריאות ורפואה', planned: 650, actual: 520 },
+                { id: 'e8', category: 'הלוואות והתחייבויות', name: 'החזר הלוואה בנקאית', planned: 1800, actual: 1800 },
+                { id: 'e9', category: 'פנאי, איכות חיים ותקשורת', name: 'תקשורת ומנויים', planned: 380, actual: 380 },
+                { id: 'e10', category: 'חיסכון והשקעות', name: 'קרן חירום + חיסכון ילדים', planned: 1500, actual: 1500 },
+                { id: 'e11', category: 'הוצאות עונתיות ובלתי צפויות', name: 'קניות לתחילת שנת הלימודים', planned: 1200, actual: 1100 }
+              ]
+            }
+          }
+        },
+        {
+          id: 'client_2',
+          name: 'רועי שחר (רווק, עצמאי)',
+          phone: '052-9988776',
+          email: 'roee.shahar@example.com',
+          startDate: '2026-08-01',
+          nextMeeting: '2026-09-20',
+          notes: 'עצמאי עם הכנסה תנודתית. היעד הוא לייצב קרן תנודות ולהפריש מסודר לפנסיה ומקדמות מס.',
+          baseline: {
+            debts: 15000,
+            overdraft: 4000,
+            savings: 12000,
+            assets: 45000,
+            challenge: 'תנודתיות גבוהה בהכנסות מעסק, קושי בתכנון הוצאות קבועות.',
+            vision: 'משכורת קבועה הנמשכת מחשבון העסק לחשבון הפרטי, וסגירת חובות.'
+          },
+          goals: [
+            { id: 'g21', title: 'הפרדה מוחלטת של חשבון בנק עסקי מפרטי', targetAmount: 1, currentAmount: 1, targetDate: '2026-09-30' },
+            { id: 'g22', title: 'יצירת כרית ביטחון בעסק ל-2 חודשי פעילות', targetAmount: 20000, currentAmount: 6000, targetDate: '2026-11-30' }
+          ],
+          tasks: [
+            { id: 't21', title: 'פגישה עם רואה החשבון לקביעת משיכה חודשית קבועה', owner: 'הלקוח', targetDate: '2026-09-10', completed: false }
+          ],
+          months: {
+            '2026-09': {
+              income: [
+                { id: 'ri1', category: 'הכנסות מעסק ועצמאי', name: 'משיכה חודשית קבועה מהעסק', planned: 12000, actual: 12000 }
+              ],
+              expense: [
+                { id: 're1', category: 'דיור ואחזקת בית', name: 'שכירות דירה בתל אביב', planned: 4800, actual: 4800 },
+                { id: 're2', category: 'דיור ואחזקת בית', name: 'חשבונות (חשמל, ארנונה, מים)', planned: 800, actual: 750 },
+                { id: 're3', category: 'מזון ומחיה שוטפת', name: 'קניות סופר ומחיה', planned: 2000, actual: 2300 },
+                { id: 're4', category: 'תחבורה ורכב', name: 'תחבורה שיתופית וקורקינט', planned: 600, actual: 550 },
+                { id: 're5', category: 'הלוואות והתחייבויות', name: 'סגירת הלוואה', planned: 1200, actual: 1200 },
+                { id: 're6', category: 'חיסכון והשקעות', name: 'קרן תנודות', planned: 1500, actual: 1500 }
+              ]
+            }
+          }
+        }
+      ]
+    };
+
+    let appState = null;
+    let cashflowChart = null;
+    let categoryPie = null;
+
+    function initApp() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          appState = JSON.parse(saved);
+        } catch (e) {
+          appState = DEMO_STATE;
+        }
+      } else {
+        appState = DEMO_STATE;
+        saveState();
+      }
+
+      renderClientSelector();
+      renderClientBanner();
+      renderActiveMonthData();
+      renderTasksAndGoals();
+      renderBaseline();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function getActiveClient() {
+      return appState.clients.find(c => c.id === appState.activeClientId) || appState.clients[0];
+    }
+
+    function getMonthData(client, monthKey) {
+      if (!client.months) client.months = {};
+      if (!client.months[monthKey]) {
+        client.months[monthKey] = { income: [], expense: [] };
+      }
+      return client.months[monthKey];
+    }
+
+    function renderClientSelector() {
+      const select = document.getElementById('clientSelect');
+      select.innerHTML = '';
+      appState.clients.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (c.id === appState.activeClientId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function switchClient(clientId) {
+      appState.activeClientId = clientId;
+      saveState();
+      renderClientBanner();
+      renderActiveMonthData();
+      renderTasksAndGoals();
+      renderBaseline();
+      if (document.getElementById('tab-trends').classList.contains('active')) {
+        renderCharts();
+      }
+    }
+
+    function renderClientBanner() {
+      const client = getActiveClient();
+      document.getElementById('bannerClientName').textContent = client.name;
+      document.getElementById('bannerStartDate').textContent = client.startDate || '-';
+      document.getElementById('bannerPhone').textContent = client.phone || '-';
+      document.getElementById('bannerNextMeeting').textContent = client.nextMeeting || 'טרם נקבע';
+
+      // Avatar initial
+      const initial = client.name.replace(/[^א-תa-zA-Z]/g, '').charAt(0) || 'ל';
+      document.getElementById('bannerAvatar').textContent = initial;
+
+      const monthData = getMonthData(client, appState.activeMonth);
+      const totalInc = monthData.income.reduce((s, i) => s + (Number(i.actual) || 0), 0);
+      const totalExp = monthData.expense.reduce((s, e) => s + (Number(e.actual) || 0), 0);
+      const net = totalInc - totalExp;
+
+      const badge = document.getElementById('bannerClientStatus');
+      if (net >= 0) {
+        badge.className = 'status-chip surplus';
+        badge.innerHTML = `<svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> עודף תזרימי (+₪${net.toLocaleString()})`;
+      } else {
+        badge.className = 'status-chip deficit';
+        badge.innerHTML = `<svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg> גירעון תזרימי (-₪${Math.abs(net).toLocaleString()})`;
+      }
+    }
+
+    function setTab(tabId, btn) {
+      document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+
+      if (tabId === 'tab-trends') {
+        renderCharts();
+      }
+    }
+
+    function changeMonth(delta) {
+      const [year, month] = appState.activeMonth.split('-').map(Number);
+      let d = new Date(year, month - 1 + delta, 1);
+      const newYear = d.getFullYear();
+      const newMonth = String(d.getMonth() + 1).padStart(2, '0');
+      appState.activeMonth = newYear + '-' + newMonth;
+      saveState();
+      renderActiveMonthData();
+      renderClientBanner();
+    }
+
+    function formatMonthHebrew(monthStr) {
+      const [year, month] = monthStr.split('-').map(Number);
+      const monthsHeb = [
+        'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני',
+        'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'
+      ];
+      return monthsHeb[month - 1] + ' ' + year;
+    }
+
+    function renderActiveMonthData() {
+      document.getElementById('currentMonthLabel').textContent = formatMonthHebrew(appState.activeMonth);
+
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+
+      let totalPlanInc = 0, totalActInc = 0;
+      let totalPlanExp = 0, totalActExp = 0;
+
+      const incByCat = {};
+      DEFAULT_CATEGORIES.income.forEach(cat => incByCat[cat] = []);
+      mData.income.forEach(item => {
+        if (!incByCat[item.category]) incByCat[item.category] = [];
+        incByCat[item.category].push(item);
+        totalPlanInc += (Number(item.planned) || 0);
+        totalActInc += (Number(item.actual) || 0);
+      });
+
+      const expByCat = {};
+      DEFAULT_CATEGORIES.expense.forEach(cat => expByCat[cat] = []);
+      mData.expense.forEach(item => {
+        if (!expByCat[item.category]) expByCat[item.category] = [];
+        expByCat[item.category].push(item);
+        totalPlanExp += (Number(item.planned) || 0);
+        totalActExp += (Number(item.actual) || 0);
+      });
+
+      document.getElementById('kpiTotalIncome').textContent = '₪' + totalActInc.toLocaleString();
+      const kpiIncCount = document.getElementById('kpiIncomeCount');
+      if (kpiIncCount) {
+        kpiIncCount.textContent = mData.income.length + ' מקורות הכנסה פעילים';
+      }
+
+      document.getElementById('kpiTotalExpense').textContent = '₪' + totalActExp.toLocaleString();
+      document.getElementById('kpiPlannedExpense').textContent = '₪' + totalPlanExp.toLocaleString();
+
+      const netCashflow = totalActInc - totalActExp;
+      const netElem = document.getElementById('kpiNetCashflow');
+      netElem.textContent = (netCashflow >= 0 ? '+' : '') + '₪' + netCashflow.toLocaleString();
+      netElem.className = 'kpi-number ' + (netCashflow >= 0 ? 'val-surplus' : 'val-deficit');
+
+      const savingsRate = totalActInc > 0 ? Math.round((netCashflow / totalActInc) * 100) : 0;
+      const savingsElem = document.getElementById('kpiSavingsRate');
+      savingsElem.textContent = savingsRate + '%';
+      savingsElem.className = 'kpi-number ' + (savingsRate >= 0 ? 'val-surplus' : 'val-deficit');
+
+      renderCategoryBlocks('incomeCategoriesContainer', incByCat, 'income');
+      renderCategoryBlocks('expenseCategoriesContainer', expByCat, 'expense');
+    }
+
+    function renderCategoryBlocks(containerId, catMap, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      Object.entries(catMap).forEach(([category, items]) => {
+        if (items.length === 0) return;
+
+        const block = document.createElement('div');
+        block.className = 'category-group';
+
+        const catActSum = items.reduce((s, i) => s + (Number(i.actual) || 0), 0);
+        const iconEmoji = CATEGORY_ICONS[category] || '📌';
+
+        let rowsHtml = '';
+        if (type === 'income') {
+          items.forEach(item => {
+            const actual = Number(item.actual) || 0;
+            rowsHtml += `
+              <tr>
+                <td><strong>` + item.name + `</strong></td>
+                <td>
+                  <input type="number" value="` + actual + `" onchange="updateItemValue('income', '` + item.id + `', 'actual', this.value)" style="width: 130px;">
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('income', '` + item.id + `')" title="מחק סעיף">
+                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          block.innerHTML = `
+            <div class="category-group-header">
+              <div class="cat-title-wrap">
+                <span class="cat-icon-chip">` + iconEmoji + `</span>
+                <span>` + category + `</span>
+                <span style="color: var(--slate-400); font-weight: 500;">(` + items.length + `)</span>
+              </div>
+              <div style="font-size: 13px; color: var(--slate-600);">
+                סך הכנסה: <strong style="color: var(--emerald); font-size: 14px;">₪` + catActSum.toLocaleString() + `</strong>
+              </div>
+            </div>
+            <table class="budget-table">
+              <thead>
+                <tr>
+                  <th>סעיף הכנסה</th>
+                  <th style="width: 150px;">סכום ההכנסה (₪)</th>
+                  <th style="width: 45px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                ` + rowsHtml + `
+              </tbody>
+            </table>
+          `;
+        } else {
+          const catPlanSum = items.reduce((s, i) => s + (Number(i.planned) || 0), 0);
+          items.forEach(item => {
+            const planned = Number(item.planned) || 0;
+            const actual = Number(item.actual) || 0;
+            const diff = planned - actual;
+            const isGood = diff >= 0;
+            const diffSign = diff >= 0 ? '+' : '';
+
+            rowsHtml += `
+              <tr>
+                <td><strong>` + item.name + `</strong></td>
+                <td>
+                  <input type="number" value="` + planned + `" onchange="updateItemValue('expense', '` + item.id + `', 'planned', this.value)">
+                </td>
+                <td>
+                  <input type="number" value="` + actual + `" onchange="updateItemValue('expense', '` + item.id + `', 'actual', this.value)">
+                </td>
+                <td>
+                  <span class="variance-tag ` + (isGood ? 'positive' : 'negative') + `">
+                    ` + (isGood ? '✓' : '▲') + ` ` + diffSign + `₪` + diff.toLocaleString() + `
+                  </span>
+                </td>
+                <td style="text-align: center;">
+                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('expense', '` + item.id + `')" title="מחק סעיף">
+                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+
+          block.innerHTML = `
+            <div class="category-group-header">
+              <div class="cat-title-wrap">
+                <span class="cat-icon-chip">` + iconEmoji + `</span>
+                <span>` + category + `</span>
+                <span style="color: var(--slate-400); font-weight: 500;">(` + items.length + `)</span>
+              </div>
+              <div style="font-size: 12px; color: var(--slate-500);">
+                יעד: <strong>₪` + catPlanSum.toLocaleString() + `</strong> &nbsp;|&nbsp; ביצוע: <strong style="color: var(--slate-800);">₪` + catActSum.toLocaleString() + `</strong>
+              </div>
+            </div>
+            <table class="budget-table">
+              <thead>
+                <tr>
+                  <th>סעיף תקציב</th>
+                  <th style="width: 120px;">יעד מתוכנן</th>
+                  <th style="width: 120px;">בפועל</th>
+                  <th style="width: 100px;">פער</th>
+                  <th style="width: 45px;"></th>
+                </tr>
+              </thead>
+              <tbody>
+                ` + rowsHtml + `
+              </tbody>
+            </table>
+          `;
+        }
+        container.appendChild(block);
+      });
+
+      if (container.children.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 36px; text-align: center; color: var(--slate-400); font-size: 14px;">
+            <svg class="icon icon-lg" style="margin-bottom: 8px; stroke: var(--slate-300);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>טרם הוזנו סעיפים לחודש זה.</div>
+            <div style="font-size: 12px; margin-top: 4px;">לחץ על הכפתור למעלה כדי להוסיף סעיף חדש או שכפל מחודש קודם.</div>
+          </div>
+        `;
+      }
+    }
+
+    function updateItemValue(type, itemId, field, value) {
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      const list = type === 'income' ? mData.income : mData.expense;
+      const item = list.find(i => i.id === itemId);
+      if (item) {
+        item[field] = Number(value) || 0;
+        if (type === 'income') {
+          item.planned = item.actual;
+        }
+        saveState();
+        renderActiveMonthData();
+        renderClientBanner();
+      }
+    }
+
+    function deleteItem(type, itemId) {
+      if (!confirm('האם למחוק סעיף זה?')) return;
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      if (type === 'income') {
+        mData.income = mData.income.filter(i => i.id !== itemId);
+      } else {
+        mData.expense = mData.expense.filter(e => e.id !== itemId);
+      }
+      saveState();
+      renderActiveMonthData();
+      renderClientBanner();
+    }
+
+    function copyFromPreviousMonth() {
+      const [year, month] = appState.activeMonth.split('-').map(Number);
+      let prevD = new Date(year, month - 2, 1);
+      const prevKey = prevD.getFullYear() + '-' + String(prevD.getMonth() + 1).padStart(2, '0');
+
+      const client = getActiveClient();
+      if (!client.months[prevKey]) {
+        alert('לא נמצאו נתונים בחודש הקודם (' + formatMonthHebrew(prevKey) + ') להעתקה.');
+        return;
+      }
+
+      if (!confirm('להעתיק את מבנה היעדים והסעיפים מחודש ' + formatMonthHebrew(prevKey) + ' לתוך חודש ' + formatMonthHebrew(appState.activeMonth) + '?')) return;
+
+      const prevData = client.months[prevKey];
+      const curData = getMonthData(client, appState.activeMonth);
+
+      curData.income = prevData.income.map(i => ({
+        id: 'i_' + Math.random().toString(36).substr(2, 9),
+        category: i.category,
+        name: i.name,
+        planned: i.actual || i.planned || 0,
+        actual: i.actual || i.planned || 0
+      }));
+
+      curData.expense = prevData.expense.map(e => ({
+        id: 'e_' + Math.random().toString(36).substr(2, 9),
+        category: e.category,
+        name: e.name,
+        planned: e.planned,
+        actual: 0
+      }));
+
+      saveState();
+      renderActiveMonthData();
+      renderClientBanner();
+      alert('הסעיפים והיעדים הועתקו בהצלחה!');
+    }
+
+    function openAddRowModal(type) {
+      document.getElementById('modalItemType').value = type;
+      document.getElementById('itemModalTitle').textContent = type === 'income' ? 'הוספת סעיף הכנסה חדש' : 'הוספת סעיף הוצאה חדש';
+
+      const catSelect = document.getElementById('modalItemCategory');
+      catSelect.innerHTML = '';
+      const categories = type === 'income' ? DEFAULT_CATEGORIES.income : DEFAULT_CATEGORIES.expense;
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = (CATEGORY_ICONS[c] || '📌') + ' ' + c;
+        catSelect.appendChild(opt);
+      });
+
+      document.getElementById('modalItemName').value = '';
+      document.getElementById('modalItemPlanned').value = 0;
+      document.getElementById('modalItemActual').value = 0;
+
+      const plannedGroup = document.getElementById('modalPlannedGroup');
+      const actualLabel = document.getElementById('modalActualLabel');
+
+      if (type === 'income') {
+        plannedGroup.style.display = 'none';
+        actualLabel.textContent = 'סכום ההכנסה החודשי (₪):';
+      } else {
+        plannedGroup.style.display = 'block';
+        actualLabel.textContent = 'סכום בפועל שבוצע (₪):';
+      }
+
+      openModal('itemModal');
+    }
+
+    function saveItemModal() {
+      const type = document.getElementById('modalItemType').value;
+      const category = document.getElementById('modalItemCategory').value;
+      const name = document.getElementById('modalItemName').value.trim();
+      const planned = Number(document.getElementById('modalItemPlanned').value) || 0;
+      const actual = Number(document.getElementById('modalItemActual').value) || 0;
+
+      if (!name) return alert('נא להזין שם סעיף');
+
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+
+      const newItem = {
+        id: (type === 'income' ? 'i_' : 'e_') + Math.random().toString(36).substr(2, 9),
+        category,
+        name,
+        planned: type === 'income' ? actual : planned,
+        actual: actual
+      };
+
+      if (type === 'income') {
+        mData.income.push(newItem);
+      } else {
+        mData.expense.push(newItem);
+      }
+
+      saveState();
+      closeModal('itemModal');
+      renderActiveMonthData();
+      renderClientBanner();
+    }
+
+    function renderTasksAndGoals() {
+      const client = getActiveClient();
+      if (!client.tasks) client.tasks = [];
+      if (!client.goals) client.goals = [];
+
+      const tasksDiv = document.getElementById('tasksList');
+      tasksDiv.innerHTML = '';
+      if (client.tasks.length === 0) {
+        tasksDiv.innerHTML = '<div style="color: var(--slate-400); font-size: 13px; text-align: center; padding: 24px;">אין משימות פתוחות לפגישה הבאה.</div>';
+      } else {
+        client.tasks.forEach(t => {
+          const item = document.createElement('div');
+          item.className = 'task-row ' + (t.completed ? 'task-done' : '');
+          item.innerHTML = `
+            <div class="task-left">
+              <input type="checkbox" class="task-checkbox" ` + (t.completed ? 'checked' : '') + ` onchange="toggleTask('` + t.id + `')">
+              <div>
+                <div class="task-text">` + t.title + `</div>
+                <div style="font-size: 12px; color: var(--slate-400); margin-top: 2px;">
+                  <span class="task-meta-tag">אחראי: ` + t.owner + `</span>
+                  &nbsp;•&nbsp; תאריך יעד: <strong>` + (t.targetDate || '-') + `</strong>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-subtle btn-sm" onclick="deleteTask('` + t.id + `')">
+              <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
+            </button>
+          `;
+          tasksDiv.appendChild(item);
+        });
+      }
+
+      const goalsDiv = document.getElementById('goalsList');
+      goalsDiv.innerHTML = '';
+      if (client.goals.length === 0) {
+        goalsDiv.innerHTML = '<div style="color: var(--slate-400); font-size: 13px; text-align: center; padding: 24px;">טרם הוגדרו יעדים מרכזיים.</div>';
+      } else {
+        client.goals.forEach(g => {
+          const target = Number(g.targetAmount) || 1;
+          const current = Number(g.currentAmount) || 0;
+          const pct = Math.min(100, Math.round((current / target) * 100));
+
+          const gCard = document.createElement('div');
+          gCard.className = 'goal-box';
+          gCard.innerHTML = `
+            <div class="goal-top">
+              <span class="goal-title">` + g.title + `</span>
+              <button class="btn btn-subtle btn-sm" onclick="deleteGoal('` + g.id + `')">
+                <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
+              </button>
+            </div>
+            <div class="goal-progress-bar">
+              <div class="goal-progress-fill" style="width: ` + pct + `%;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--slate-500);">
+              <span>התקדמות: <strong>₪` + current.toLocaleString() + `</strong> מתוך <strong>₪` + target.toLocaleString() + `</strong> (` + pct + `%)</span>
+              <span>יעד: <strong>` + (g.targetDate || '-') + `</strong></span>
+            </div>
+          `;
+          goalsDiv.appendChild(gCard);
+        });
+      }
+
+      document.getElementById('mentorNotesArea').value = client.notes || '';
+    }
+
+    function toggleTask(id) {
+      const client = getActiveClient();
+      const t = client.tasks.find(x => x.id === id);
+      if (t) {
+        t.completed = !t.completed;
+        saveState();
+        renderTasksAndGoals();
+      }
+    }
+
+    function deleteTask(id) {
+      const client = getActiveClient();
+      client.tasks = client.tasks.filter(x => x.id !== id);
+      saveState();
+      renderTasksAndGoals();
+    }
+
+    function deleteGoal(id) {
+      if (!confirm('האם למחוק יעד זה?')) return;
+      const client = getActiveClient();
+      client.goals = client.goals.filter(x => x.id !== id);
+      saveState();
+      renderTasksAndGoals();
+    }
+
+    function saveClientNotes() {
+      const client = getActiveClient();
+      client.notes = document.getElementById('mentorNotesArea').value;
+      saveState();
+      const ind = document.getElementById('notesSaveIndicator');
+      ind.style.display = 'inline';
+      setTimeout(() => { ind.style.display = 'none'; }, 2000);
+    }
+
+    function openAddTaskModal() {
+      document.getElementById('modalTaskTitle').value = '';
+      document.getElementById('modalTaskDate').value = '';
+      openModal('taskModal');
+    }
+
+    function saveTaskModal() {
+      const title = document.getElementById('modalTaskTitle').value.trim();
+      const owner = document.getElementById('modalTaskOwner').value;
+      const targetDate = document.getElementById('modalTaskDate').value;
+      if (!title) return alert('נא להזין תיאור משימה');
+
+      const client = getActiveClient();
+      client.tasks.push({
+        id: 't_' + Math.random().toString(36).substr(2, 9),
+        title,
+        owner,
+        targetDate,
+        completed: false
+      });
+      saveState();
+      closeModal('taskModal');
+      renderTasksAndGoals();
+    }
+
+    function openAddGoalModal() {
+      document.getElementById('modalGoalTitle').value = '';
+      document.getElementById('modalGoalTargetAmount').value = '';
+      document.getElementById('modalGoalCurrentAmount').value = '';
+      document.getElementById('modalGoalTargetDate').value = '';
+      openModal('goalModal');
+    }
+
+    function saveGoalModal() {
+      const title = document.getElementById('modalGoalTitle').value.trim();
+      const targetAmount = Number(document.getElementById('modalGoalTargetAmount').value) || 0;
+      const currentAmount = Number(document.getElementById('modalGoalCurrentAmount').value) || 0;
+      const targetDate = document.getElementById('modalGoalTargetDate').value;
+      if (!title) return alert('נא להזין שם יעד');
+
+      const client = getActiveClient();
+      client.goals.push({
+        id: 'g_' + Math.random().toString(36).substr(2, 9),
+        title,
+        targetAmount,
+        currentAmount,
+        targetDate
+      });
+      saveState();
+      closeModal('goalModal');
+      renderTasksAndGoals();
+    }
+
+    function renderBaseline() {
+      const client = getActiveClient();
+      const b = client.baseline || {};
+      document.getElementById('baseDebts').value = b.debts || 0;
+      document.getElementById('baseOverdraft').value = b.overdraft || 0;
+      document.getElementById('baseSavings').value = b.savings || 0;
+      document.getElementById('baseAssets').value = b.assets || 0;
+      document.getElementById('baseChallenge').value = b.challenge || '';
+      document.getElementById('baseVision').value = b.vision || '';
+    }
+
+    function updateBaselineData() {
+      const client = getActiveClient();
+      client.baseline = {
+        debts: Number(document.getElementById('baseDebts').value) || 0,
+        overdraft: Number(document.getElementById('baseOverdraft').value) || 0,
+        savings: Number(document.getElementById('baseSavings').value) || 0,
+        assets: Number(document.getElementById('baseAssets').value) || 0,
+        challenge: document.getElementById('baseChallenge').value,
+        vision: document.getElementById('baseVision').value
+      };
+      saveState();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    let editingClientId = null;
+    function openNewClientModal() {
+      editingClientId = null;
+      document.getElementById('clientModalTitle').textContent = 'הוספת לקוח חדש לליווי';
+      document.getElementById('modalClientName').value = '';
+      document.getElementById('modalClientPhone').value = '';
+      document.getElementById('modalClientEmail').value = '';
+      document.getElementById('modalClientStartDate').value = new Date().toISOString().split('T')[0];
+      openModal('clientModal');
+    }
+
+    function editClientInfo() {
+      const client = getActiveClient();
+      editingClientId = client.id;
+      document.getElementById('clientModalTitle').textContent = 'עריכת פרטי לקוח';
+      document.getElementById('modalClientName').value = client.name;
+      document.getElementById('modalClientPhone').value = client.phone || '';
+      document.getElementById('modalClientEmail').value = client.email || '';
+      document.getElementById('modalClientStartDate').value = client.startDate || '';
+      openModal('clientModal');
+    }
+
+    function saveClientModal() {
+      const name = document.getElementById('modalClientName').value.trim();
+      const phone = document.getElementById('modalClientPhone').value.trim();
+      const email = document.getElementById('modalClientEmail').value.trim();
+      const startDate = document.getElementById('modalClientStartDate').value;
+
+      if (!name) return alert('נא להזין שם לקוח');
+
+      if (editingClientId) {
+        const c = appState.clients.find(x => x.id === editingClientId);
+        if (c) {
+          c.name = name;
+          c.phone = phone;
+          c.email = email;
+          c.startDate = startDate;
+        }
+      } else {
+        const newId = 'client_' + Math.random().toString(36).substr(2, 9);
+        appState.clients.push({
+          id: newId,
+          name,
+          phone,
+          email,
+          startDate,
+          nextMeeting: '',
+          notes: '',
+          baseline: { debts: 0, overdraft: 0, savings: 0, assets: 0, challenge: '', vision: '' },
+          goals: [],
+          tasks: [],
+          months: {}
+        });
+        appState.activeClientId = newId;
+      }
+
+      saveState();
+      closeModal('clientModal');
+      renderClientSelector();
+      renderClientBanner();
+      renderActiveMonthData();
+      renderTasksAndGoals();
+      renderBaseline();
+    }
+
+    function renderCharts() {
+      const client = getActiveClient();
+      const monthKeys = Object.keys(client.months || {}).sort();
+
+      const labels = [];
+      const incomes = [];
+      const expenses = [];
+      const netCashflows = [];
+
+      monthKeys.forEach(m => {
+        labels.push(formatMonthHebrew(m));
+        const data = client.months[m];
+        const inc = data.income.reduce((s, i) => s + (Number(i.actual) || 0), 0);
+        const exp = data.expense.reduce((s, e) => s + (Number(e.actual) || 0), 0);
+        incomes.push(inc);
+        expenses.push(exp);
+        netCashflows.push(inc - exp);
+      });
+
+      const ctx1 = document.getElementById('cashflowTrendChart').getContext('2d');
+      if (cashflowChart) cashflowChart.destroy();
+
+      cashflowChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'הכנסות בפועל',
+              data: incomes,
+              backgroundColor: 'rgba(5, 150, 105, 0.75)',
+              borderColor: '#059669',
+              borderWidth: 1,
+              borderRadius: 6
+            },
+            {
+              label: 'הוצאות בפועל',
+              data: expenses,
+              backgroundColor: 'rgba(225, 29, 72, 0.75)',
+              borderColor: '#e11d48',
+              borderWidth: 1,
+              borderRadius: 6
+            },
+            {
+              type: 'line',
+              label: 'תזרים נטו',
+              data: netCashflows,
+              borderColor: '#4f46e5',
+              backgroundColor: 'rgba(79, 70, 229, 0.15)',
+              borderWidth: 3,
+              tension: 0.25,
+              fill: false,
+              pointRadius: 5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { font: { family: 'Assistant', size: 12, weight: 600 } } }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: v => '₪' + v.toLocaleString() }
+            }
+          }
+        }
+      });
+
+      const curData = getMonthData(client, appState.activeMonth);
+      const catSums = {};
+      curData.expense.forEach(e => {
+        const cat = e.category || 'אחר';
+        catSums[cat] = (catSums[cat] || 0) + (Number(e.actual) || 0);
+      });
+
+      const pieLabels = Object.keys(catSums);
+      const pieValues = Object.values(catSums);
+
+      const ctx2 = document.getElementById('categoryPieChart').getContext('2d');
+      if (categoryPie) categoryPie.destroy();
+
+      categoryPie = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: pieLabels,
+          datasets: [{
+            data: pieValues,
+            backgroundColor: [
+              '#4f46e5', '#059669', '#d97706', '#e11d48', '#8b5cf6',
+              '#ec4899', '#06b6d4', '#14b8a6', '#f97316'
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Assistant', size: 11, weight: 600 } } }
+          }
+        }
+      });
+
+      const tbody = document.querySelector('#multiMonthTable tbody');
+      tbody.innerHTML = '';
+      monthKeys.forEach(m => {
+        const data = client.months[m];
+        const inc = data.income.reduce((s, i) => s + (Number(i.actual) || 0), 0);
+        const exp = data.expense.reduce((s, e) => s + (Number(e.actual) || 0), 0);
+        const expPlan = data.expense.reduce((s, e) => s + (Number(e.planned) || 0), 0);
+        const net = inc - exp;
+        const savingsPct = inc > 0 ? Math.round((net / inc) * 100) : 0;
+        const budgetAdherence = expPlan > 0 ? (exp <= expPlan ? 'עמד ביעד' : `חריגה של ₪${(exp - expPlan).toLocaleString()}`) : '-';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>` + formatMonthHebrew(m) + `</strong></td>
+          <td>₪` + inc.toLocaleString() + `</td>
+          <td>₪` + exp.toLocaleString() + `</td>
+          <td class="` + (net >= 0 ? 'val-surplus' : 'val-deficit') + `"><strong>` + (net >= 0 ? '+' : '') + `₪` + net.toLocaleString() + `</strong></td>
+          <td>` + budgetAdherence + `</td>
+          <td>` + savingsPct + `%</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", 'finguide_backup_' + new Date().toISOString().split('T')[0] + '.json');
+      dlAnchor.click();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.clients && Array.isArray(imported.clients)) {
+            appState = imported;
+            saveState();
+            initApp();
+            alert('הנתונים שוחזרו בהצלחה!');
+          } else {
+            alert('קובץ נתונים לא תקין.');
+          }
+        } catch (err) {
+          alert('שגיאה בקריאת הקובץ: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDemoData() {
+      if (confirm('האם לאפס את כל הנתונים בחזרה לנתוני הדוגמה?')) {
+        appState = JSON.parse(JSON.stringify(DEMO_STATE));
+        saveState();
+        initApp();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      checkAuth();
+    });
+  </script>
+</body>
+</html>
