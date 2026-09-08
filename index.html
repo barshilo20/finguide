@@ -963,6 +963,172 @@
       gap: 6px;
     }
 
+  
+    /* --- CALMING & ACCORDION STYLES (v5) --- */
+    
+    /* Budget Segmented Switcher */
+    .budget-type-switch-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--card-bg);
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .budget-type-switch {
+      display: flex;
+      background: var(--slate-100);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      gap: 4px;
+    }
+
+    .budget-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: var(--slate-600);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .budget-switch-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .budget-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Single Centered Wide View for active budget type */
+    .single-budget-container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    /* Accordion Category Box */
+    .accordion-category-box {
+      background: var(--card-bg);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-xs);
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .accordion-category-box:hover {
+      border-color: var(--slate-300);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .accordion-header {
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      background: #ffffff;
+      transition: background 0.15s ease;
+    }
+
+    .accordion-header:hover {
+      background: #f8fafc;
+    }
+
+    .accordion-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .accordion-header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .accordion-chevron {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.25s ease;
+      color: var(--slate-400);
+    }
+
+    .accordion-category-box.open .accordion-chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      display: none;
+      border-top: 1px solid var(--slate-100);
+      background: #ffffff;
+      animation: expandDown 0.2s ease-out;
+    }
+
+    .accordion-category-box.open .accordion-content {
+      display: block;
+    }
+
+    @keyframes expandDown {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Financial Health Progress Bar */
+    .health-bar-container {
+      background: var(--card-bg);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: var(--shadow-xs);
+      flex-wrap: wrap;
+    }
+
+    .health-bar-track {
+      flex: 1;
+      min-width: 240px;
+      height: 10px;
+      background: var(--slate-100);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+    }
+
+    .health-bar-fill-exp {
+      background: #f43f5e;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
+    .health-bar-fill-sav {
+      background: #10b981;
+      height: 100%;
+      transition: width 0.4s ease;
+    }
+
   </style>
 </head>
 <body>
@@ -1141,15 +1307,15 @@
         </div>
       </div>
 
-      <!-- KPI Metrics Cards -->
-      <div class="kpi-row">
-        <!-- Income KPI -->
+      <!-- Airy 3-Hero KPI Overview -->
+      <div class="kpi-row" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <!-- 1. Total Income -->
         <div class="kpi-card">
           <div class="kpi-content">
-            <span class="kpi-label">סך כל ההכנסות</span>
-            <div class="kpi-number" id="kpiTotalIncome">₪0</div>
+            <span class="kpi-label">סך הכנסות חודשי</span>
+            <div class="kpi-number" id="kpiTotalIncome" style="color: var(--emerald);">₪0</div>
             <div class="kpi-subtext">
-              <span id="kpiIncomeCount">מקורות הכנסה שוטפים</span>
+              <span id="kpiIncomeCount">0 מקורות הכנסה פעילים</span>
             </div>
           </div>
           <div class="kpi-badge-icon badge-income">
@@ -1157,11 +1323,11 @@
           </div>
         </div>
 
-        <!-- Expense KPI -->
+        <!-- 2. Total Expense -->
         <div class="kpi-card">
           <div class="kpi-content">
             <span class="kpi-label">סך הוצאות בפועל</span>
-            <div class="kpi-number" id="kpiTotalExpense">₪0</div>
+            <div class="kpi-number" id="kpiTotalExpense" style="color: var(--slate-900);">₪0</div>
             <div class="kpi-subtext">
               תקציב יעד: <strong id="kpiPlannedExpense">₪0</strong>
             </div>
@@ -1171,68 +1337,71 @@
           </div>
         </div>
 
-        <!-- Net Cashflow KPI -->
+        <!-- 3. Net Cashflow -->
         <div class="kpi-card">
           <div class="kpi-content">
-            <span class="kpi-label">תזרים נטו (עודף / גירעון)</span>
+            <span class="kpi-label">תזרים נטו חודשי (עודף / גירעון)</span>
             <div class="kpi-number" id="kpiNetCashflow">₪0</div>
-            <div class="kpi-subtext">
-              הכנסות פחות הוצאות
+            <div class="kpi-subtext" id="kpiNetSubtext">
+              שיעור חיסכון: <strong id="kpiSavingsRate">0%</strong>
             </div>
           </div>
           <div class="kpi-badge-icon badge-net">
             <svg class="icon icon-lg" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
           </div>
         </div>
+      </div>
 
-        <!-- Savings Rate KPI -->
-        <div class="kpi-card">
-          <div class="kpi-content">
-            <span class="kpi-label">שיעור חיסכון</span>
-            <div class="kpi-number" id="kpiSavingsRate">0%</div>
-            <div class="kpi-subtext">
-              מתוך סך ההכנסות
-            </div>
-          </div>
-          <div class="kpi-badge-icon badge-rate">
-            <svg class="icon icon-lg" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          </div>
+      <!-- Financial Health & Ratio Bar -->
+      <div class="health-bar-container">
+        <div style="font-size: 13px; font-weight: 700; color: var(--slate-700); min-width: 170px;">
+          יחס הכנסות מול הוצאות:
+        </div>
+        <div class="health-bar-track">
+          <div id="healthBarExp" class="health-bar-fill-exp" style="width: 80%;" title="הוצאות"></div>
+          <div id="healthBarSav" class="health-bar-fill-sav" style="width: 20%;" title="חיסכון ועודף"></div>
+        </div>
+        <div style="font-size: 13px; color: var(--slate-600); min-width: 200px; text-align: left;">
+          <span id="healthBarLabel">80% הוצאות | 20% חיסכון</span>
         </div>
       </div>
 
-      <!-- Side-by-Side Tables -->
-      <div class="tables-layout">
-        
-        <!-- INCOMES -->
-        <div class="budget-section">
-          <div class="budget-section-header">
-            <h3>
-              <svg class="icon" style="color: var(--emerald);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>
-              פירוט הכנסות חודשיות
-            </h3>
-            <button class="btn btn-emerald btn-sm" onclick="openAddRowModal('income')">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-              הוסף סעיף הכנסה
-            </button>
-          </div>
-          <div id="incomeCategoriesContainer"></div>
+      <!-- Segmented Switcher: Expenses vs. Income -->
+      <div class="budget-type-switch-wrapper">
+        <div class="budget-type-switch">
+          <button type="button" id="toggleExpenseViewBtn" class="budget-switch-btn active" onclick="switchBudgetType('expense')">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+            הוצאות חודשיות (<span id="expenseCategoriesCount">0</span> קטגוריות)
+          </button>
+          <button type="button" id="toggleIncomeViewBtn" class="budget-switch-btn" onclick="switchBudgetType('income')">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>
+            הכנסות חודשיות (<span id="incomeCategoriesCount">0</span> קטגוריות)
+          </button>
         </div>
 
-        <!-- EXPENSES -->
-        <div class="budget-section">
-          <div class="budget-section-header">
-            <h3>
-              <svg class="icon" style="color: var(--rose);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-              פירוט הוצאות חודשיות
-            </h3>
-            <button class="btn btn-primary btn-sm" onclick="openAddRowModal('expense')">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-              הוסף סעיף הוצאה
-            </button>
-          </div>
+        <div class="budget-actions-right">
+          <button class="btn btn-outline btn-sm" onclick="toggleAllAccordions()">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+            פתח / קפל הכל
+          </button>
+          <button id="addBudgetRowBtn" class="btn btn-primary btn-sm" onclick="openAddRowModal(currentBudgetType)">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            הוסף סעיף הוצאה
+          </button>
+        </div>
+      </div>
+
+      <!-- Single Wide View Container for active type -->
+      <div class="single-budget-container">
+        <!-- Expenses Container -->
+        <div id="expensesSectionWrap">
           <div id="expenseCategoriesContainer"></div>
         </div>
 
+        <!-- Incomes Container (hidden by default) -->
+        <div id="incomesSectionWrap" style="display: none;">
+          <div id="incomeCategoriesContainer"></div>
+        </div>
       </div>
     </div>
 
@@ -1862,36 +2031,80 @@
       savingsElem.textContent = savingsRate + '%';
       savingsElem.className = 'kpi-number ' + (savingsRate >= 0 ? 'val-surplus' : 'val-deficit');
 
+      
+      // Update Health Ratio Bar
+      const expFill = document.getElementById('healthBarExp');
+      const savFill = document.getElementById('healthBarSav');
+      const labelElem = document.getElementById('healthBarLabel');
+      if (expFill && savFill && labelElem) {
+        if (totalActInc > 0) {
+          const expPct = Math.min(100, Math.round((totalActExp / totalActInc) * 100));
+          const savPct = Math.max(0, 100 - expPct);
+          expFill.style.width = expPct + '%';
+          savFill.style.width = savPct + '%';
+          if (netCashflow >= 0) {
+            labelElem.innerHTML = `<strong>${expPct}%</strong> הוצאות &nbsp;|&nbsp; <strong style="color: var(--emerald);">${savPct}%</strong> עודף / חיסכון`;
+          } else {
+            labelElem.innerHTML = `<strong style="color: var(--rose);">חריגה של ${expPct - 100}% מעבר להכנסה!</strong>`;
+          }
+        } else {
+          expFill.style.width = '100%';
+          savFill.style.width = '0%';
+          labelElem.textContent = 'טרם הוזנו הכנסות';
+        }
+      }
+
       renderCategoryBlocks('incomeCategoriesContainer', incByCat, 'income');
       renderCategoryBlocks('expenseCategoriesContainer', expByCat, 'expense');
     }
 
-    function renderCategoryBlocks(containerId, catMap, type) {
+        function renderCategoryBlocks(containerId, catMap, type) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
 
-      Object.entries(catMap).forEach(([category, items]) => {
-        if (items.length === 0) return;
+      const nonZeroCats = Object.entries(catMap).filter(([_, items]) => items.length > 0);
+      
+      // Update count badge in switcher
+      if (type === 'expense') {
+        const cntElem = document.getElementById('expenseCategoriesCount');
+        if (cntElem) cntElem.textContent = nonZeroCats.length;
+      } else {
+        const cntElem = document.getElementById('incomeCategoriesCount');
+        if (cntElem) cntElem.textContent = nonZeroCats.length;
+      }
 
+      nonZeroCats.forEach(([category, items], idx) => {
         const block = document.createElement('div');
-        block.className = 'category-group';
+        // By default, open the first 2 categories or all based on allAccordionsOpen
+        block.className = 'accordion-category-box ' + (allAccordionsOpen ? 'open' : (idx < 2 ? 'open' : ''));
 
-        const catActSum = items.reduce((s, i) => s + (Number(i.actual) || 0), 0);
         const iconEmoji = CATEGORY_ICONS[category] || '📌';
+        const catActSum = items.reduce((s, i) => s + (Number(i.actual) || 0), 0);
 
         let rowsHtml = '';
+        let headerRightHtml = '';
+
         if (type === 'income') {
+          headerRightHtml = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; color: var(--slate-500);">סך הכל:</span>
+              <strong style="color: var(--emerald); font-size: 15px;">₪${catActSum.toLocaleString()}</strong>
+            </div>
+          `;
+
           items.forEach(item => {
             const actual = Number(item.actual) || 0;
             rowsHtml += `
               <tr>
-                <td><strong>` + item.name + `</strong></td>
+                <td style="font-size: 14px; font-weight: 600; color: var(--slate-800);">
+                  ${item.name}
+                </td>
                 <td>
-                  <input type="number" value="` + actual + `" onchange="updateItemValue('income', '` + item.id + `', 'actual', this.value)" style="width: 130px;">
+                  <input type="number" value="${actual}" onchange="updateItemValue('income', '${item.id}', 'actual', this.value)" style="width: 140px; font-size: 14px;">
                 </td>
                 <td style="text-align: center;">
-                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('income', '` + item.id + `')" title="מחק סעיף">
-                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('income', '${item.id}')" title="מחק סעיף">
+                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
                   </button>
                 </td>
               </tr>
@@ -1899,55 +2112,73 @@
           });
 
           block.innerHTML = `
-            <div class="category-group-header">
-              <div class="cat-title-wrap">
-                <span class="cat-icon-chip">` + iconEmoji + `</span>
-                <span>` + category + `</span>
-                <span style="color: var(--slate-400); font-weight: 500;">(` + items.length + `)</span>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <div class="accordion-header-left">
+                <svg class="accordion-chevron icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                <span class="cat-icon-chip">${iconEmoji}</span>
+                <strong style="font-size: 15px; color: var(--slate-900);">${category}</strong>
+                <span style="color: var(--slate-400); font-size: 13px; font-weight: 600;">(${items.length} סעיפים)</span>
               </div>
-              <div style="font-size: 13px; color: var(--slate-600);">
-                סך הכנסה: <strong style="color: var(--emerald); font-size: 14px;">₪` + catActSum.toLocaleString() + `</strong>
+              <div class="accordion-header-right">
+                ${headerRightHtml}
               </div>
             </div>
-            <table class="budget-table">
-              <thead>
-                <tr>
-                  <th>סעיף הכנסה</th>
-                  <th style="width: 150px;">סכום ההכנסה (₪)</th>
-                  <th style="width: 45px;"></th>
-                </tr>
-              </thead>
-              <tbody>
-                ` + rowsHtml + `
-              </tbody>
-            </table>
+            <div class="accordion-content">
+              <table class="budget-table">
+                <thead>
+                  <tr>
+                    <th>סעיף הכנסה</th>
+                    <th style="width: 160px;">סכום ההכנסה (₪)</th>
+                    <th style="width: 45px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
           `;
         } else {
           const catPlanSum = items.reduce((s, i) => s + (Number(i.planned) || 0), 0);
+          const diff = catPlanSum - catActSum;
+          const isGood = diff >= 0;
+
+          headerRightHtml = `
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+              <span>יעד: <strong>₪${catPlanSum.toLocaleString()}</strong></span>
+              <span>בפועל: <strong style="color: var(--slate-900);">₪${catActSum.toLocaleString()}</strong></span>
+              <span class="variance-tag ${isGood ? 'positive' : 'negative'}">
+                ${isGood ? '✓ עמד ביעד' : `▲ חריגה ₪${Math.abs(diff).toLocaleString()}`}
+              </span>
+            </div>
+          `;
+
           items.forEach(item => {
             const planned = Number(item.planned) || 0;
             const actual = Number(item.actual) || 0;
-            const diff = planned - actual;
-            const isGood = diff >= 0;
-            const diffSign = diff >= 0 ? '+' : '';
+            const rowDiff = planned - actual;
+            const rowGood = rowDiff >= 0;
+            const rowDiffSign = rowDiff >= 0 ? '+' : '';
 
             rowsHtml += `
               <tr>
-                <td><strong>` + item.name + `</strong></td>
-                <td>
-                  <input type="number" value="` + planned + `" onchange="updateItemValue('expense', '` + item.id + `', 'planned', this.value)">
+                <td style="font-size: 14px; font-weight: 600; color: var(--slate-800);">
+                  ${item.name}
                 </td>
                 <td>
-                  <input type="number" value="` + actual + `" onchange="updateItemValue('expense', '` + item.id + `', 'actual', this.value)">
+                  <input type="number" value="${planned}" onchange="updateItemValue('expense', '${item.id}', 'planned', this.value)">
                 </td>
                 <td>
-                  <span class="variance-tag ` + (isGood ? 'positive' : 'negative') + `">
-                    ` + (isGood ? '✓' : '▲') + ` ` + diffSign + `₪` + diff.toLocaleString() + `
+                  <input type="number" value="${actual}" onchange="updateItemValue('expense', '${item.id}', 'actual', this.value)">
+                </td>
+                <td>
+                  <span class="variance-tag ${rowGood ? 'positive' : 'negative'}">
+                    ${rowGood ? '✓' : '▲'} ${rowDiffSign}₪${rowDiff.toLocaleString()}
                   </span>
                 </td>
                 <td style="text-align: center;">
-                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('expense', '` + item.id + `')" title="מחק סעיף">
-                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  <button class="btn btn-subtle btn-sm" onclick="deleteItem('expense', '${item.id}')" title="מחק סעיף">
+                    <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
                   </button>
                 </td>
               </tr>
@@ -1955,41 +2186,45 @@
           });
 
           block.innerHTML = `
-            <div class="category-group-header">
-              <div class="cat-title-wrap">
-                <span class="cat-icon-chip">` + iconEmoji + `</span>
-                <span>` + category + `</span>
-                <span style="color: var(--slate-400); font-weight: 500;">(` + items.length + `)</span>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+              <div class="accordion-header-left">
+                <svg class="accordion-chevron icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                <span class="cat-icon-chip">${iconEmoji}</span>
+                <strong style="font-size: 15px; color: var(--slate-900);">${category}</strong>
+                <span style="color: var(--slate-400); font-size: 13px; font-weight: 600;">(${items.length} סעיפים)</span>
               </div>
-              <div style="font-size: 12px; color: var(--slate-500);">
-                יעד: <strong>₪` + catPlanSum.toLocaleString() + `</strong> &nbsp;|&nbsp; ביצוע: <strong style="color: var(--slate-800);">₪` + catActSum.toLocaleString() + `</strong>
+              <div class="accordion-header-right">
+                ${headerRightHtml}
               </div>
             </div>
-            <table class="budget-table">
-              <thead>
-                <tr>
-                  <th>סעיף תקציב</th>
-                  <th style="width: 120px;">יעד מתוכנן</th>
-                  <th style="width: 120px;">בפועל</th>
-                  <th style="width: 100px;">פער</th>
-                  <th style="width: 45px;"></th>
-                </tr>
-              </thead>
-              <tbody>
-                ` + rowsHtml + `
-              </tbody>
-            </table>
+            <div class="accordion-content">
+              <table class="budget-table">
+                <thead>
+                  <tr>
+                    <th>סעיף הוצאה</th>
+                    <th style="width: 120px;">יעד מתוכנן</th>
+                    <th style="width: 120px;">בפועל</th>
+                    <th style="width: 100px;">פער</th>
+                    <th style="width: 45px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
           `;
         }
+
         container.appendChild(block);
       });
 
       if (container.children.length === 0) {
         container.innerHTML = `
-          <div style="padding: 36px; text-align: center; color: var(--slate-400); font-size: 14px;">
+          <div style="padding: 40px 20px; text-align: center; color: var(--slate-400); font-size: 14px; background: var(--card-bg); border-radius: var(--radius-md); border: 1px dashed var(--slate-200);">
             <svg class="icon icon-lg" style="margin-bottom: 8px; stroke: var(--slate-300);" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <div>טרם הוזנו סעיפים לחודש זה.</div>
-            <div style="font-size: 12px; margin-top: 4px;">לחץ על הכפתור למעלה כדי להוסיף סעיף חדש או שכפל מחודש קודם.</div>
+            <div style="font-weight: 600; color: var(--slate-600);">אין סעיפים פעילים עדיין ב-${type === 'expense' ? 'הוצאות' : 'הכנסות'}</div>
+            <div style="font-size: 12px; margin-top: 4px;">לחץ על הכפתור למעלה כדי להוסיף סעיף חדש.</div>
           </div>
         `;
       }
@@ -2552,6 +2787,47 @@
 
     
     
+    
+    // --- ACCORDION & BUDGET VIEW SWITCHER (v5) ---
+    let currentBudgetType = 'expense'; // 'expense' or 'income'
+    let allAccordionsOpen = true;
+
+    function switchBudgetType(type) {
+      currentBudgetType = type;
+      const isExp = type === 'expense';
+
+      document.getElementById('toggleExpenseViewBtn').classList.toggle('active', isExp);
+      document.getElementById('toggleIncomeViewBtn').classList.toggle('active', !isExp);
+
+      document.getElementById('expensesSectionWrap').style.display = isExp ? 'block' : 'none';
+      document.getElementById('incomesSectionWrap').style.display = isExp ? 'none' : 'block';
+
+      const addBtn = document.getElementById('addBudgetRowBtn');
+      if (addBtn) {
+        if (isExp) {
+          addBtn.className = 'btn btn-primary btn-sm';
+          addBtn.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> הוסף סעיף הוצאה';
+        } else {
+          addBtn.className = 'btn btn-emerald btn-sm';
+          addBtn.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> הוסף סעיף הכנסה';
+        }
+      }
+    }
+
+    function toggleAccordion(headerElem) {
+      const box = headerElem.closest('.accordion-category-box');
+      if (box) {
+        box.classList.toggle('open');
+      }
+    }
+
+    function toggleAllAccordions() {
+      allAccordionsOpen = !allAccordionsOpen;
+      document.querySelectorAll('.accordion-category-box').forEach(box => {
+        box.classList.toggle('open', allAccordionsOpen);
+      });
+    }
+
     // --- SUPABASE CLOUD INTEGRATION ---
     const SUPABASE_URL = 'https://dryzmtdrptcwcdhcudzg.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_9GPDl4d90q8_w2-bx81oVg_eBKfuzgs';
