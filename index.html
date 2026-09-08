@@ -907,6 +907,62 @@
       margin-bottom: 24px;
     }
 
+  
+    /* Role-based navigation and tabs */
+    .login-role-tabs {
+      display: flex;
+      background: var(--slate-100);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+
+    .login-role-tab {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      color: var(--slate-500);
+      transition: all 0.2s;
+    }
+
+    .login-role-tab.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .role-badge-admin {
+      background: #ede9fe;
+      color: #6d28d9;
+      border: 1px solid #ddd6fe;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .role-badge-client {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
   </style>
 </head>
 <body>
@@ -920,10 +976,19 @@
       <h2 class="login-title">FinGuide</h2>
       <p class="login-subtitle">כניסה למערכת ליווי ומעקב פיננסי</p>
       
+      <div class="login-role-tabs">
+        <button type="button" id="roleTabAdmin" class="login-role-tab active" onclick="switchLoginRole('admin')">
+          מלווה (מנהל)
+        </button>
+        <button type="button" id="roleTabClient" class="login-role-tab" onclick="switchLoginRole('client')">
+          לקוח מלווה
+        </button>
+      </div>
+
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="field-group" style="text-align: right;">
-          <label for="loginPasswordInput">קוד גישה / סיסמת כניסה:</label>
-          <input type="password" id="loginPasswordInput" placeholder="הזן סיסמה..." required autofocus style="padding: 10px 14px; font-size: 15px; text-align: center; letter-spacing: 2px;">
+          <label for="loginPasswordInput" id="loginInputLabel">סיסמת מלווה (מנהל):</label>
+          <input type="password" id="loginPasswordInput" placeholder="הזן סיסמת מנהל..." required autofocus style="padding: 10px 14px; font-size: 15px; text-align: center; letter-spacing: 2px;">
         </div>
         <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 12px; display: none;">
           סיסמה שגויה, נסה שוב.
@@ -932,9 +997,8 @@
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           כניסה למערכת
         </button>
-        <div style="font-size: 12px; color: var(--slate-400); margin-top: 18px; line-height: 1.5;">
-          סיסמת ברירת מחדל ראשונית: <strong style="color: var(--primary);">1234</strong><br>
-          (ניתן לשנות את הסיסמה בהגדרות המערכת בכל עת)
+        <div id="loginHintText" style="font-size: 12px; color: var(--slate-400); margin-top: 18px; line-height: 1.5;">
+          סיסמת מנהל ראשונית: <strong style="color: var(--primary);">1234</strong>
         </div>
       </form>
     </div>
@@ -954,7 +1018,7 @@
         </div>
       </div>
 
-      <div class="client-select-wrapper">
+      <div class="client-select-wrapper admin-only">
         <label for="clientSelect">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           תיק לקוח:
@@ -973,7 +1037,7 @@
         <span>מסונכרן בענן</span>
       </div>
 
-        <button class="btn btn-subtle btn-sm" onclick="promptChangePassword()" title="שינוי סיסמת כניסה">
+        <button class="btn btn-subtle btn-sm admin-only" onclick="promptChangePassword()" title="שינוי סיסמת מנהל">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           שינוי סיסמה
         </button>
@@ -981,16 +1045,16 @@
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           נעילה / יציאה
         </button>
-        <button class="btn btn-outline btn-sm" onclick="exportData()" title="שמירת קובץ גיבוי של כל הנתונים">
+        <button class="btn btn-outline btn-sm admin-only" onclick="exportData()" title="שמירת קובץ גיבוי של כל הנתונים">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           גיבוי JSON
         </button>
-        <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()" title="טעינת קובץ גיבוי">
+        <button class="btn btn-outline btn-sm admin-only" onclick="document.getElementById('fileInput').click()" title="טעינת קובץ גיבוי">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           שחזור
         </button>
         <input type="file" id="fileInput" style="display:none" onchange="importData(event)" accept=".json">
-        <button class="btn btn-subtle btn-sm" onclick="resetToDemoData()" title="איפוס לנתוני הדוגמה">
+        <button class="btn btn-subtle btn-sm admin-only" onclick="resetToDemoData()" title="איפוס לנתוני הדוגמה">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           איפוס דוגמה
         </button>
@@ -1002,6 +1066,7 @@
   <section class="hero-banner">
     <div class="hero-inner">
       <div class="client-card-header">
+        <div id="roleIndicatorBadge"></div>
         <div class="client-avatar" id="bannerAvatar">כ</div>
         <div class="client-details">
           <h2>
@@ -1027,7 +1092,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="admin-only">
         <button class="btn btn-outline btn-sm" onclick="editClientInfo()">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
           ערוך פרטי לקוח
@@ -1348,6 +1413,11 @@
         <label>תאריך תחילת ליווי:</label>
         <input type="date" id="modalClientStartDate">
       </div>
+      <div class="field-group">
+        <label>קוד כניסה אישי ללקוח (4 ספרות או קוד אישי):</label>
+        <input type="text" id="modalClientPasscode" placeholder="למשל: 1111" style="letter-spacing: 2px; font-weight: 700;">
+        <span style="font-size: 11px; color: var(--slate-500);">הקוד שהלקוח יזין במסך הכניסה כדי להיכנס ישירות לתיק שלו.</span>
+      </div>
       <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px;">
         <button class="btn btn-outline" onclick="closeModal('clientModal')">ביטול</button>
         <button class="btn btn-primary" onclick="saveClientModal()">שמור לקוח</button>
@@ -1502,6 +1572,7 @@
       clients: [
         {
           id: 'client_1',
+          passcode: '1111',
           name: 'משפחת כהן (דן ומיכל)',
           phone: '054-7654321',
           email: 'cohen.family@example.com',
@@ -1587,6 +1658,7 @@
         },
         {
           id: 'client_2',
+          passcode: '2222',
           name: 'רועי שחר (רווק, עצמאי)',
           phone: '052-9988776',
           email: 'roee.shahar@example.com',
@@ -2252,6 +2324,7 @@
       document.getElementById('modalClientName').value = '';
       document.getElementById('modalClientPhone').value = '';
       document.getElementById('modalClientEmail').value = '';
+      document.getElementById('modalClientPasscode').value = String(Math.floor(1000 + Math.random() * 9000));
       document.getElementById('modalClientStartDate').value = new Date().toISOString().split('T')[0];
       openModal('clientModal');
     }
@@ -2263,6 +2336,7 @@
       document.getElementById('modalClientName').value = client.name;
       document.getElementById('modalClientPhone').value = client.phone || '';
       document.getElementById('modalClientEmail').value = client.email || '';
+      document.getElementById('modalClientPasscode').value = client.passcode || '';
       document.getElementById('modalClientStartDate').value = client.startDate || '';
       openModal('clientModal');
     }
@@ -2271,6 +2345,7 @@
       const name = document.getElementById('modalClientName').value.trim();
       const phone = document.getElementById('modalClientPhone').value.trim();
       const email = document.getElementById('modalClientEmail').value.trim();
+      const passcode = document.getElementById('modalClientPasscode').value.trim();
       const startDate = document.getElementById('modalClientStartDate').value;
 
       if (!name) return alert('נא להזין שם לקוח');
@@ -2281,12 +2356,14 @@
           c.name = name;
           c.phone = phone;
           c.email = email;
+          c.passcode = passcode || c.passcode || '1234';
           c.startDate = startDate;
         }
       } else {
         const newId = 'client_' + Math.random().toString(36).substr(2, 9);
         appState.clients.push({
           id: newId,
+          passcode: passcode || String(Math.floor(1000 + Math.random() * 9000)),
           name,
           phone,
           email,
@@ -2602,16 +2679,46 @@
       }
     }
 
-    // --- AUTHENTICATION LOGIC ---
+    
+    // --- AUTHENTICATION & ROLES ---
     const AUTH_KEY = 'finguide_auth_session';
+    const ROLE_KEY = 'finguide_current_role'; // 'admin' or 'client'
+    const CLIENT_ID_KEY = 'finguide_logged_client_id';
     const PASS_KEY = 'finguide_user_pass';
     const DEFAULT_PASS = '1234';
+
+    let currentLoginRole = 'admin'; // 'admin' or 'client'
+
+    function switchLoginRole(role) {
+      currentLoginRole = role;
+      document.getElementById('roleTabAdmin').classList.toggle('active', role === 'admin');
+      document.getElementById('roleTabClient').classList.toggle('active', role === 'client');
+
+      const label = document.getElementById('loginInputLabel');
+      const input = document.getElementById('loginPasswordInput');
+      const hint = document.getElementById('loginHintText');
+      const err = document.getElementById('loginErrorMessage');
+      if (err) err.style.display = 'none';
+
+      if (role === 'admin') {
+        label.textContent = 'סיסמת מלווה (מנהל):';
+        input.placeholder = 'הזן סיסמת מנהל...';
+        hint.innerHTML = 'סיסמת מנהל ראשונית: <strong style="color: var(--primary);">1234</strong>';
+      } else {
+        label.textContent = 'קוד גישה אישי של הלקוח:';
+        input.placeholder = 'הזן קוד לקוח (לדוגמה: 1111)...';
+        hint.innerHTML = 'קודים לדוגמה: <strong style="color: var(--primary);">1111</strong> (משפחת כהן) או <strong style="color: var(--primary);">2222</strong> (רועי שחר)';
+      }
+      input.value = '';
+      input.focus();
+    }
 
     function checkAuth() {
       const isAuth = sessionStorage.getItem(AUTH_KEY);
       const loginScreen = document.getElementById('loginScreen');
       if (isAuth === 'true') {
         if (loginScreen) loginScreen.classList.add('hidden');
+        applyRoleUI();
       } else {
         if (loginScreen) {
           loginScreen.classList.remove('hidden');
@@ -2628,43 +2735,119 @@
       if (event) event.preventDefault();
       const inputElem = document.getElementById('loginPasswordInput');
       const input = inputElem ? inputElem.value.trim() : '';
-      const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
       const err = document.getElementById('loginErrorMessage');
 
-      if (input === currentPass) {
-        if (err) err.style.display = 'none';
-        sessionStorage.setItem(AUTH_KEY, 'true');
-        const loginScreen = document.getElementById('loginScreen');
-        if (loginScreen) loginScreen.classList.add('hidden');
+      if (currentLoginRole === 'admin') {
+        const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+        if (input === currentPass) {
+          if (err) err.style.display = 'none';
+          sessionStorage.setItem(AUTH_KEY, 'true');
+          sessionStorage.setItem(ROLE_KEY, 'admin');
+          sessionStorage.removeItem(CLIENT_ID_KEY);
+          document.getElementById('loginScreen').classList.add('hidden');
+          applyRoleUI();
+        } else {
+          if (err) {
+            err.textContent = 'סיסמת מנהל שגויה, נסה שוב.';
+            err.style.display = 'block';
+          }
+          if (inputElem) inputElem.select();
+        }
       } else {
-        if (err) err.style.display = 'block';
-        if (inputElem) inputElem.select();
+        // Client Login
+        const matched = appState.clients.find(c => (c.passcode && String(c.passcode).trim() === input) || (c.phone && c.phone.replace(/[^0-9]/g, '') === input.replace(/[^0-9]/g, '')));
+        if (matched) {
+          if (err) err.style.display = 'none';
+          sessionStorage.setItem(AUTH_KEY, 'true');
+          sessionStorage.setItem(ROLE_KEY, 'client');
+          sessionStorage.setItem(CLIENT_ID_KEY, matched.id);
+          appState.activeClientId = matched.id;
+          saveState();
+          document.getElementById('loginScreen').classList.add('hidden');
+          applyRoleUI();
+        } else {
+          if (err) {
+            err.textContent = 'קוד לקוח לא נמצא. פנה למלווה לקבלת קוד אישי.';
+            err.style.display = 'block';
+          }
+          if (inputElem) inputElem.select();
+        }
       }
+    }
+
+    function applyRoleUI() {
+      const role = sessionStorage.getItem(ROLE_KEY) || 'admin';
+      const isClient = role === 'client';
+
+      if (isClient) {
+        const loggedClientId = sessionStorage.getItem(CLIENT_ID_KEY);
+        if (loggedClientId) {
+          appState.activeClientId = loggedClientId;
+        }
+      }
+
+      // Show/Hide admin-only elements
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isClient ? 'none' : '';
+      });
+
+      // Update role badge in banner
+      const badge = document.getElementById('roleIndicatorBadge');
+      if (badge) {
+        if (isClient) {
+          badge.className = 'role-badge-client';
+          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ממשק לקוח';
+        } else {
+          badge.className = 'role-badge-admin';
+          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ממשק מלווה (מנהל)';
+        }
+      }
+
+      // In client view, make notes area read-only and label as mentor summary
+      const notesArea = document.getElementById('mentorNotesArea');
+      if (notesArea) {
+        if (isClient) {
+          notesArea.setAttribute('readonly', 'true');
+          notesArea.placeholder = 'סיכומי הפגישות וההנחיות מהמלווה יופיעו כאן...';
+        } else {
+          notesArea.removeAttribute('readonly');
+          notesArea.placeholder = 'רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב...';
+        }
+      }
+
+      renderClientSelector();
+      renderClientBanner();
+      renderActiveMonthData();
+      renderTasksAndGoals();
+      renderBaseline();
     }
 
     function handleLogout() {
       sessionStorage.removeItem(AUTH_KEY);
+      sessionStorage.removeItem(ROLE_KEY);
+      sessionStorage.removeItem(CLIENT_ID_KEY);
       checkAuth();
     }
 
     function promptChangePassword() {
       const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
-      const oldEntered = prompt('הזן את הסיסמה הנוכחית:');
+      const oldEntered = prompt('הזן את סיסמת המנהל הנוכחית:');
       if (oldEntered === null) return;
       if (oldEntered !== currentPass) {
         alert('הסיסמה הנוכחית שהוזנה שגויה.');
         return;
       }
 
-      const newPass = prompt('הזן סיסמה חדשה:');
+      const newPass = prompt('הזן סיסמת מנהל חדשה:');
       if (!newPass || newPass.trim().length === 0) {
         alert('לא הוזנה סיסמה תקינה.');
         return;
       }
 
       localStorage.setItem(PASS_KEY, newPass.trim());
-      alert('הסיסמה שונתה בהצלחה!');
+      alert('סיסמת המנהל שונתה בהצלחה!');
     }
+
 
     window.addEventListener('DOMContentLoaded', () => {
       initApp();
