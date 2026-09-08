@@ -1129,41 +1129,182 @@
       transition: width 0.4s ease;
     }
 
+  
+    /* --- LUXURY LOGIN STYLING (v6) --- */
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #090d16;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .login-overlay.hidden {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    .login-glow-1 {
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.42) 0%, rgba(79, 70, 229, 0) 70%);
+      top: -120px;
+      right: -100px;
+      filter: blur(70px);
+      pointer-events: none;
+      animation: floatOrb 9s infinite alternate ease-in-out;
+    }
+
+    .login-glow-2 {
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0) 70%);
+      bottom: -120px;
+      left: -100px;
+      filter: blur(70px);
+      pointer-events: none;
+      animation: floatOrb 11s infinite alternate-reverse ease-in-out;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(35px, 25px) scale(1.12); }
+    }
+
+    .login-card-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      width: 100%;
+      max-width: 430px;
+      border-radius: 24px;
+      padding: 38px 34px;
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.25);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    @keyframes shakeCard {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-9px); }
+      40%, 80% { transform: translateX(9px); }
+    }
+
+    .shake-error {
+      animation: shakeCard 0.4s ease-in-out;
+    }
+
+    .pass-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pass-input-wrap input {
+      width: 100%;
+      padding: 12px 46px 12px 16px;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: 2px;
+      border-radius: 12px;
+      border: 1px solid var(--slate-200);
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+
+    .pass-input-wrap input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+    }
+
+    .toggle-eye-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--slate-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border-radius: 6px;
+      transition: color 0.15s;
+    }
+
+    .toggle-eye-btn:hover {
+      color: var(--slate-700);
+    }
+
   </style>
 </head>
 <body>
 
   <!-- Fullscreen Login Security Screen -->
   <div class="login-overlay" id="loginScreen">
-    <div class="login-card-box">
+    <div class="login-glow-1"></div>
+    <div class="login-glow-2"></div>
+    <div class="login-card-box" id="loginCardBox">
       <div class="login-badge">
         <svg class="icon icon-lg" style="width: 28px; height: 28px;" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       </div>
       <h2 class="login-title">FinGuide</h2>
-      <p class="login-subtitle">כניסה למערכת ליווי ומעקב פיננסי</p>
-      
+      <p class="login-subtitle" style="margin-bottom: 4px;">מערכת ליווי וצמיחה פיננסית</p>
+      <div style="font-size: 12px; color: var(--primary); font-weight: 700; margin-bottom: 22px;">
+        הצעד הראשון לביטחון ואיזון כלכלי
+      </div>
+
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
-        <div class="field-group" style="text-align: right;">
+        <div class="field-group" style="text-align: right; margin-bottom: 12px;">
           <label for="loginPasswordInput">קוד גישה או סיסמה:</label>
-          <input type="password" id="loginPasswordInput" placeholder="הזן קוד לקוח או סיסמת מנהל..." required autofocus style="padding: 11px 14px; font-size: 16px; text-align: center; letter-spacing: 2px; border-radius: 10px;">
+          <div class="pass-input-wrap">
+            <input type="password" id="loginPasswordInput" placeholder="הזן קוד לקוח או סיסמת מנהל..." required autofocus>
+            <button type="button" class="toggle-eye-btn" onclick="togglePasswordVisibility()" title="הצג / הסתר סיסמה">
+              <svg id="eyeIconOpen" class="icon icon-sm" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeIconClosed" class="icon icon-sm" style="display: none;" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+            </button>
+          </div>
         </div>
-        <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 14px; padding: 8px 12px; background: var(--rose-light); border: 1px solid var(--rose-border); border-radius: 8px; display: none;">
-          קוד גישה שגוי. הגישה נדחתה.
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px;">
+          <label style="display: flex; align-items: center; gap: 7px; cursor: pointer; color: var(--slate-600); font-weight: 600;">
+            <input type="checkbox" id="rememberMeCheckbox" style="width: 17px; height: 17px; accent-color: var(--primary);">
+            הישאר מחובר במכשיר זה
+          </label>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 15px; border-radius: 10px; font-weight: 700;">
+
+        <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 14px; padding: 10px 14px; background: var(--rose-light); border: 1px solid var(--rose-border); border-radius: 10px; display: none;">
+          קוד שגוי. הגישה נדחתה.
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 15px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           כניסה למערכת
         </button>
-        <div style="font-size: 12px; color: var(--slate-500); margin-top: 18px; line-height: 1.5; background: var(--slate-50); padding: 10px; border-radius: 8px; border: 1px solid var(--slate-200);">
-          <strong>הסבר לכניסה:</strong><br>
-          • <strong>מלווה (מנהל):</strong> מזין סיסמת מנהל (ברירת מחדל: 1234)<br>
-          • <strong>לקוח:</strong> מזין את הקוד האישי שלו בלבד ונכנס אך ורק לעמוד שלו
+
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--slate-400);">
+          <span>מנהל: 1234 &bull; לקוח: קוד אישי</span>
+          <a href="https://wa.me/?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%A9%D7%9B%D7%97%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%A7%D7%95%D7%93%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%A9%D7%9C%D7%99%20%D7%9C%D7%9E%D7%A2%D7%A8%D7%9B%D7%AA%20FinGuide" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+            שכחת קוד? פנה למלווה &larr;
+          </a>
         </div>
       </form>
     </div>
   </div>
-
-
+  
   <!-- Navigation Bar -->
   <header>
     <div class="nav-container">
@@ -2951,6 +3092,34 @@
 
     
     
+    
+    // --- LOGIN LUXURY UX FUNCTIONS (v6) ---
+    function togglePasswordVisibility() {
+      const input = document.getElementById('loginPasswordInput');
+      const eyeOpen = document.getElementById('eyeIconOpen');
+      const eyeClosed = document.getElementById('eyeIconClosed');
+      if (!input) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeOpen) eyeOpen.style.display = 'none';
+        if (eyeClosed) eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        if (eyeOpen) eyeOpen.style.display = 'block';
+        if (eyeClosed) eyeClosed.style.display = 'none';
+      }
+    }
+
+    function triggerShakeAnimation() {
+      const card = document.getElementById('loginCardBox');
+      if (card) {
+        card.classList.remove('shake-error');
+        void card.offsetWidth; // trigger DOM reflow
+        card.classList.add('shake-error');
+      }
+    }
+
     // --- AIRTIGHT AUTHENTICATION & ROLE ENFORCEMENT ---
     const AUTH_KEY = 'finguide_auth_session';
     const ROLE_KEY = 'finguide_current_role'; // 'admin' or 'client'
@@ -2969,18 +3138,22 @@
     }
 
     function checkAuth() {
-      const isAuth = sessionStorage.getItem(AUTH_KEY);
-      const role = sessionStorage.getItem(ROLE_KEY);
+      const isAuth = sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_KEY);
+      const role = sessionStorage.getItem(ROLE_KEY) || localStorage.getItem(ROLE_KEY);
       const loginScreen = document.getElementById('loginScreen');
 
       if (isAuth === 'true' && (role === 'admin' || role === 'client')) {
         if (loginScreen) loginScreen.classList.add('hidden');
         applyRoleUI();
       } else {
-        // Enforce lockout
+        // Enforce clean lockout
         sessionStorage.removeItem(AUTH_KEY);
         sessionStorage.removeItem(ROLE_KEY);
         sessionStorage.removeItem(CLIENT_ID_KEY);
+        localStorage.removeItem(AUTH_KEY);
+        localStorage.removeItem(ROLE_KEY);
+        localStorage.removeItem(CLIENT_ID_KEY);
+
         if (loginScreen) {
           loginScreen.classList.remove('hidden');
           const passInput = document.getElementById('loginPasswordInput');
@@ -3012,12 +3185,15 @@
 
       const adminPass = getAdminPassword();
 
+      const rememberMe = document.getElementById('rememberMeCheckbox') && document.getElementById('rememberMeCheckbox').checked;
+      const storage = rememberMe ? localStorage : sessionStorage;
+
       // Check 1: Admin Password Match
       if (input === adminPass) {
         if (err) err.style.display = 'none';
-        sessionStorage.setItem(AUTH_KEY, 'true');
-        sessionStorage.setItem(ROLE_KEY, 'admin');
-        sessionStorage.removeItem(CLIENT_ID_KEY);
+        storage.setItem(AUTH_KEY, 'true');
+        storage.setItem(ROLE_KEY, 'admin');
+        storage.removeItem(CLIENT_ID_KEY);
 
         const loginScreen = document.getElementById('loginScreen');
         if (loginScreen) loginScreen.classList.add('hidden');
@@ -3035,9 +3211,9 @@
 
         if (matched) {
           if (err) err.style.display = 'none';
-          sessionStorage.setItem(AUTH_KEY, 'true');
-          sessionStorage.setItem(ROLE_KEY, 'client');
-          sessionStorage.setItem(CLIENT_ID_KEY, matched.id);
+          storage.setItem(AUTH_KEY, 'true');
+          storage.setItem(ROLE_KEY, 'client');
+          storage.setItem(CLIENT_ID_KEY, matched.id);
           appState.activeClientId = matched.id;
 
           const loginScreen = document.getElementById('loginScreen');
@@ -3048,8 +3224,9 @@
       }
 
       // If we reach here: ACCESS STRICTLY DENIED!
+      triggerShakeAnimation();
       if (err) {
-        err.textContent = 'קוד שגוי. הגישה נדחתה!';
+        err.textContent = 'קוד גישה שגוי. הגישה נדחתה.';
         err.style.display = 'block';
       }
       if (inputElem) {
@@ -3121,6 +3298,9 @@
       sessionStorage.removeItem(AUTH_KEY);
       sessionStorage.removeItem(ROLE_KEY);
       sessionStorage.removeItem(CLIENT_ID_KEY);
+      localStorage.removeItem(AUTH_KEY);
+      localStorage.removeItem(ROLE_KEY);
+      localStorage.removeItem(CLIENT_ID_KEY);
       checkAuth();
     }
 
