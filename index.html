@@ -976,29 +976,22 @@
       <h2 class="login-title">FinGuide</h2>
       <p class="login-subtitle">כניסה למערכת ליווי ומעקב פיננסי</p>
       
-      <div class="login-role-tabs">
-        <button type="button" id="roleTabAdmin" class="login-role-tab active" onclick="switchLoginRole('admin')">
-          מלווה (מנהל)
-        </button>
-        <button type="button" id="roleTabClient" class="login-role-tab" onclick="switchLoginRole('client')">
-          לקוח מלווה
-        </button>
-      </div>
-
       <form id="loginForm" onsubmit="handleLoginSubmit(event)">
         <div class="field-group" style="text-align: right;">
-          <label for="loginPasswordInput" id="loginInputLabel">סיסמת מלווה (מנהל):</label>
-          <input type="password" id="loginPasswordInput" placeholder="הזן סיסמת מנהל..." required autofocus style="padding: 10px 14px; font-size: 15px; text-align: center; letter-spacing: 2px;">
+          <label for="loginPasswordInput">קוד גישה או סיסמה:</label>
+          <input type="password" id="loginPasswordInput" placeholder="הזן קוד לקוח או סיסמת מנהל..." required autofocus style="padding: 11px 14px; font-size: 16px; text-align: center; letter-spacing: 2px; border-radius: 10px;">
         </div>
-        <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 12px; display: none;">
-          סיסמה שגויה, נסה שוב.
+        <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 14px; padding: 8px 12px; background: var(--rose-light); border: 1px solid var(--rose-border); border-radius: 8px; display: none;">
+          קוד גישה שגוי. הגישה נדחתה.
         </div>
-        <button type="submit" onclick="handleLoginSubmit(event)" class="btn btn-primary" style="width: 100%; padding: 11px; font-size: 15px; border-radius: 10px; font-weight: 700;">
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 15px; border-radius: 10px; font-weight: 700;">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           כניסה למערכת
         </button>
-        <div id="loginHintText" style="font-size: 12px; color: var(--slate-400); margin-top: 18px; line-height: 1.5;">
-          סיסמת מנהל ראשונית: <strong style="color: var(--primary);">1234</strong>
+        <div style="font-size: 12px; color: var(--slate-500); margin-top: 18px; line-height: 1.5; background: var(--slate-50); padding: 10px; border-radius: 8px; border: 1px solid var(--slate-200);">
+          <strong>הסבר לכניסה:</strong><br>
+          • <strong>מלווה (מנהל):</strong> מזין סיסמת מנהל (ברירת מחדל: 1234)<br>
+          • <strong>לקוח:</strong> מזין את הקוד האישי שלו בלבד ונכנס אך ורק לעמוד שלו
         </div>
       </form>
     </div>
@@ -1567,6 +1560,7 @@
     };
 
     const DEMO_STATE = {
+      adminPassword: '1234',
       activeClientId: 'client_1',
       activeMonth: '2026-09',
       clients: [
@@ -2680,46 +2674,37 @@
     }
 
     
-    // --- AUTHENTICATION & ROLES ---
+    
+    // --- AIRTIGHT AUTHENTICATION & ROLE ENFORCEMENT ---
     const AUTH_KEY = 'finguide_auth_session';
     const ROLE_KEY = 'finguide_current_role'; // 'admin' or 'client'
     const CLIENT_ID_KEY = 'finguide_logged_client_id';
     const PASS_KEY = 'finguide_user_pass';
     const DEFAULT_PASS = '1234';
 
-    let currentLoginRole = 'admin'; // 'admin' or 'client'
-
-    function switchLoginRole(role) {
-      currentLoginRole = role;
-      document.getElementById('roleTabAdmin').classList.toggle('active', role === 'admin');
-      document.getElementById('roleTabClient').classList.toggle('active', role === 'client');
-
-      const label = document.getElementById('loginInputLabel');
-      const input = document.getElementById('loginPasswordInput');
-      const hint = document.getElementById('loginHintText');
-      const err = document.getElementById('loginErrorMessage');
-      if (err) err.style.display = 'none';
-
-      if (role === 'admin') {
-        label.textContent = 'סיסמת מלווה (מנהל):';
-        input.placeholder = 'הזן סיסמת מנהל...';
-        hint.innerHTML = 'סיסמת מנהל ראשונית: <strong style="color: var(--primary);">1234</strong>';
-      } else {
-        label.textContent = 'קוד גישה אישי של הלקוח:';
-        input.placeholder = 'הזן קוד לקוח (לדוגמה: 1111)...';
-        hint.innerHTML = 'קודים לדוגמה: <strong style="color: var(--primary);">1111</strong> (משפחת כהן) או <strong style="color: var(--primary);">2222</strong> (רועי שחר)';
+    function getAdminPassword() {
+      // Preference: synced cloud password in appState > local storage > default
+      if (appState && appState.adminPassword && String(appState.adminPassword).trim()) {
+        return String(appState.adminPassword).trim();
       }
-      input.value = '';
-      input.focus();
+      const local = localStorage.getItem(PASS_KEY);
+      if (local && local.trim()) return local.trim();
+      return DEFAULT_PASS;
     }
 
     function checkAuth() {
       const isAuth = sessionStorage.getItem(AUTH_KEY);
+      const role = sessionStorage.getItem(ROLE_KEY);
       const loginScreen = document.getElementById('loginScreen');
-      if (isAuth === 'true') {
+
+      if (isAuth === 'true' && (role === 'admin' || role === 'client')) {
         if (loginScreen) loginScreen.classList.add('hidden');
         applyRoleUI();
       } else {
+        // Enforce lockout
+        sessionStorage.removeItem(AUTH_KEY);
+        sessionStorage.removeItem(ROLE_KEY);
+        sessionStorage.removeItem(CLIENT_ID_KEY);
         if (loginScreen) {
           loginScreen.classList.remove('hidden');
           const passInput = document.getElementById('loginPasswordInput');
@@ -2732,61 +2717,83 @@
     }
 
     function handleLoginSubmit(event) {
-      if (event) event.preventDefault();
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
       const inputElem = document.getElementById('loginPasswordInput');
       const input = inputElem ? inputElem.value.trim() : '';
       const err = document.getElementById('loginErrorMessage');
 
-      if (currentLoginRole === 'admin') {
-        const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
-        if (input === currentPass) {
-          if (err) err.style.display = 'none';
-          sessionStorage.setItem(AUTH_KEY, 'true');
-          sessionStorage.setItem(ROLE_KEY, 'admin');
-          sessionStorage.removeItem(CLIENT_ID_KEY);
-          document.getElementById('loginScreen').classList.add('hidden');
-          applyRoleUI();
-        } else {
-          if (err) {
-            err.textContent = 'סיסמת מנהל שגויה, נסה שוב.';
-            err.style.display = 'block';
-          }
-          if (inputElem) inputElem.select();
+      if (!input) {
+        if (err) {
+          err.textContent = 'נא להזין סיסמה או קוד גישה.';
+          err.style.display = 'block';
         }
-      } else {
-        // Client Login
-        const matched = appState.clients.find(c => (c.passcode && String(c.passcode).trim() === input) || (c.phone && c.phone.replace(/[^0-9]/g, '') === input.replace(/[^0-9]/g, '')));
+        return false;
+      }
+
+      const adminPass = getAdminPassword();
+
+      // Check 1: Admin Password Match
+      if (input === adminPass) {
+        if (err) err.style.display = 'none';
+        sessionStorage.setItem(AUTH_KEY, 'true');
+        sessionStorage.setItem(ROLE_KEY, 'admin');
+        sessionStorage.removeItem(CLIENT_ID_KEY);
+
+        const loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) loginScreen.classList.add('hidden');
+        applyRoleUI();
+        return false;
+      }
+
+      // Check 2: Client Passcode Match (STRICT EXACT MATCH ONLY, non-empty)
+      if (appState && appState.clients && Array.isArray(appState.clients)) {
+        const matched = appState.clients.find(c => {
+          if (!c.passcode || typeof c.passcode !== 'string') return false;
+          const cleanPass = c.passcode.trim();
+          return cleanPass.length >= 2 && cleanPass === input;
+        });
+
         if (matched) {
           if (err) err.style.display = 'none';
           sessionStorage.setItem(AUTH_KEY, 'true');
           sessionStorage.setItem(ROLE_KEY, 'client');
           sessionStorage.setItem(CLIENT_ID_KEY, matched.id);
           appState.activeClientId = matched.id;
-          saveState();
-          document.getElementById('loginScreen').classList.add('hidden');
+
+          const loginScreen = document.getElementById('loginScreen');
+          if (loginScreen) loginScreen.classList.add('hidden');
           applyRoleUI();
-        } else {
-          if (err) {
-            err.textContent = 'קוד לקוח לא נמצא. פנה למלווה לקבלת קוד אישי.';
-            err.style.display = 'block';
-          }
-          if (inputElem) inputElem.select();
+          return false;
         }
       }
+
+      // If we reach here: ACCESS STRICTLY DENIED!
+      if (err) {
+        err.textContent = 'קוד שגוי. הגישה נדחתה!';
+        err.style.display = 'block';
+      }
+      if (inputElem) {
+        inputElem.value = '';
+        inputElem.focus();
+      }
+      return false;
     }
 
     function applyRoleUI() {
-      const role = sessionStorage.getItem(ROLE_KEY) || 'admin';
+      const role = sessionStorage.getItem(ROLE_KEY);
       const isClient = role === 'client';
+      const loggedClientId = sessionStorage.getItem(CLIENT_ID_KEY);
 
-      if (isClient) {
-        const loggedClientId = sessionStorage.getItem(CLIENT_ID_KEY);
-        if (loggedClientId) {
-          appState.activeClientId = loggedClientId;
-        }
+      if (isClient && loggedClientId) {
+        // Force active client to only be the logged in client!
+        appState.activeClientId = loggedClientId;
       }
 
-      // Show/Hide admin-only elements
+      // Hide all admin-only elements completely
       document.querySelectorAll('.admin-only').forEach(el => {
         el.style.display = isClient ? 'none' : '';
       });
@@ -2795,15 +2802,17 @@
       const badge = document.getElementById('roleIndicatorBadge');
       if (badge) {
         if (isClient) {
+          const clientObj = appState.clients.find(c => c.id === loggedClientId);
+          const clientName = clientObj ? clientObj.name : 'לקוח';
           badge.className = 'role-badge-client';
-          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ממשק לקוח';
+          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> ממשק לקוח אישי';
         } else {
           badge.className = 'role-badge-admin';
-          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ממשק מלווה (מנהל)';
+          badge.innerHTML = '<svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ממשק מלווה (מנהל ראשי)';
         }
       }
 
-      // In client view, make notes area read-only and label as mentor summary
+      // In client view, make notes area read-only
       const notesArea = document.getElementById('mentorNotesArea');
       if (notesArea) {
         if (isClient) {
@@ -2814,6 +2823,16 @@
           notesArea.placeholder = 'רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב...';
         }
       }
+
+      // In client view, disable baseline editing so clients do not overwrite initial agreement
+      const baselineInputs = ['baseDebts', 'baseOverdraft', 'baseSavings', 'baseAssets', 'baseChallenge', 'baseVision'];
+      baselineInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (isClient) el.setAttribute('disabled', 'true');
+          else el.removeAttribute('disabled');
+        }
+      });
 
       renderClientSelector();
       renderClientBanner();
@@ -2830,23 +2849,29 @@
     }
 
     function promptChangePassword() {
-      const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+      const currentPass = getAdminPassword();
       const oldEntered = prompt('הזן את סיסמת המנהל הנוכחית:');
       if (oldEntered === null) return;
       if (oldEntered !== currentPass) {
-        alert('הסיסמה הנוכחית שהוזנה שגויה.');
+        alert('הסיסמה הנוכחית שגויה.');
         return;
       }
 
-      const newPass = prompt('הזן סיסמת מנהל חדשה:');
-      if (!newPass || newPass.trim().length === 0) {
-        alert('לא הוזנה סיסמה תקינה.');
+      const newPass = prompt('הזן סיסמת מנהל חדשה (לפחות 4 תווים):');
+      if (!newPass || newPass.trim().length < 4) {
+        alert('הסיסמה חייבת להכיל לפחות 4 תווים.');
         return;
       }
 
-      localStorage.setItem(PASS_KEY, newPass.trim());
-      alert('סיסמת המנהל שונתה בהצלחה!');
+      const cleanPass = newPass.trim();
+      localStorage.setItem(PASS_KEY, cleanPass);
+      if (appState) {
+        appState.adminPassword = cleanPass;
+        saveState(); // syncs to Supabase so new admin pass applies everywhere!
+      }
+      alert('סיסמת המנהל עודכנה וסונכרנה בהצלחה בענן!');
     }
+
 
 
     window.addEventListener('DOMContentLoaded', () => {
