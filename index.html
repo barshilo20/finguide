@@ -1249,6 +1249,225 @@
       color: var(--slate-700);
     }
 
+  
+    /* --- HIGH CONTRAST & VISUAL POP (v7) --- */
+    
+    /* Stronger Typography & Global Contrast */
+    h1, h2, h3, h4, strong {
+      color: #020617 !important; /* Deep Slate 950 */
+    }
+
+    .client-details h2 span#bannerClientName {
+      font-size: 24px;
+      font-weight: 900;
+      color: #020617;
+    }
+
+    /* Tabs Bar Contrast */
+    .tabs-wrapper {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 6px 16px;
+      margin: 18px auto 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .tab-pill {
+      font-size: 15px;
+      font-weight: 800;
+      color: #475569;
+      padding: 12px 20px;
+    }
+
+    .tab-pill:hover {
+      color: #0f172a;
+    }
+
+    .tab-pill.active {
+      color: var(--primary);
+      border-bottom: 3.5px solid var(--primary);
+    }
+
+    /* KPI Cards High-Contrast Pop with Top Accent Bar */
+    .kpi-card {
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      position: relative;
+      background: #ffffff;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .kpi-card:nth-child(1)::before { background: var(--emerald); }
+    .kpi-card:nth-child(2)::before { background: var(--rose); }
+    .kpi-card:nth-child(3)::before { background: var(--primary); }
+
+    .kpi-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .kpi-number {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.8px;
+    }
+
+    /* Accordion Category Box High Contrast */
+    .accordion-category-box {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin-bottom: 14px;
+    }
+
+    .accordion-header {
+      padding: 16px 22px;
+      background: #f8fafc;
+      border-right: 5px solid var(--primary);
+      border-bottom: 1px solid transparent;
+    }
+
+    .accordion-category-box.open .accordion-header {
+      background: #f1f5f9;
+      border-bottom: 1.5px solid #cbd5e1;
+    }
+
+    .accordion-header strong {
+      font-size: 16px;
+      font-weight: 900;
+      color: #020617;
+    }
+
+    .cat-icon-chip {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      border: 1px solid #cbd5e1;
+      font-size: 16px;
+    }
+
+    /* Table Clear Headers & Zebra Striping */
+    .budget-table th {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .budget-table td {
+      padding: 12px 18px;
+      border-top: 1px solid #e2e8f0;
+      color: #0f172a;
+    }
+
+    .budget-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .budget-table tr:hover td {
+      background: #eff6ff !important; /* Soft blue highlight on hover */
+    }
+
+    .budget-table input[type="number"] {
+      width: 120px;
+      padding: 7px 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #020617;
+      border: 1.5px solid #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .budget-table input[type="number"]:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+    }
+
+    /* High Contrast Variance Tags */
+    .variance-tag {
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .variance-tag.positive {
+      background: #dcfce7;
+      color: #14532d;
+      border: 1px solid #86efac;
+    }
+
+    .variance-tag.negative {
+      background: #ffe4e6;
+      color: #881337;
+      border: 1px solid #fda4af;
+    }
+
+    /* Cards & Container Borders */
+    .budget-type-switch-wrapper,
+    .health-bar-container,
+    .plan-card,
+    .chart-box {
+      border: 1.5px solid #cbd5e1 !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .plan-card-header h3,
+    .chart-box h3 {
+      font-size: 18px;
+      font-weight: 900;
+      color: #020617;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+
+    .task-row {
+      border: 1.5px solid #cbd5e1;
+    }
+
+    .task-row:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+
+    .task-text {
+      font-weight: 700;
+      color: #020617;
+    }
+
+    /* Month Navigator Bar */
+    .month-bar {
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .current-month-display {
+      font-size: 19px;
+      font-weight: 900;
+      color: #020617;
+    }
+
   </style>
 </head>
 <body>
@@ -1688,6 +1907,64 @@
       </div>
     </div>
   </main>
+
+  
+  <!-- Modal: Sub-entries & Cumulative Calculator -->
+  <div class="modal-backdrop" id="subEntriesModal">
+    <div class="modal-window" style="max-width: 540px;">
+      <div class="modal-header-row">
+        <div>
+          <h3 id="subModalItemTitle">פירוט הוצאות מצטברות</h3>
+          <p id="subModalItemSubtitle" style="font-size: 13px; color: var(--slate-500); margin-top: 2px;">רישום וחיבור הוצאות שוטפות לסעיף</p>
+        </div>
+        <button class="btn btn-subtle btn-sm" onclick="closeModal('subEntriesModal')">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Current Total Banner -->
+      <div style="background: var(--slate-100); border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <span style="font-weight: 700; color: var(--slate-700); font-size: 14px;">סך כל ההוצאה בסעיף זה:</span>
+        <strong id="subModalTotalDisplay" style="font-size: 22px; font-weight: 900; color: #020617;">₪0</strong>
+      </div>
+
+      <!-- Quick Add Form -->
+      <form id="subEntryForm" onsubmit="handleAddSubEntry(event)" style="background: #ffffff; border: 1.5px solid var(--primary-border); border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(79,70,229,0.06);">
+        <div style="font-weight: 800; font-size: 14px; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          הוספת הוצאה חדשה לסעיף
+        </div>
+        <div style="display: grid; grid-template-columns: 130px 1fr auto; gap: 10px; align-items: flex-end;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--slate-700); margin-bottom: 4px;">סכום (₪):</label>
+            <input type="number" id="newSubAmount" placeholder="למשל: 65" required autofocus style="width: 100%; font-size: 15px; font-weight: 800;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--slate-700); margin-bottom: 4px;">תיאור קצר (אופציונלי):</label>
+            <input type="text" id="newSubNote" placeholder="למשל: קפה ומאפה / סופר קטן" style="width: 100%; font-size: 14px;">
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary" style="padding: 9px 16px; font-weight: 800; border-radius: 8px;">
+              + הוסף
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Sub-entries List -->
+      <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 13px; font-weight: 800; color: var(--slate-800);">פירוט הרישומים החודש:</span>
+        <span id="subEntriesCount" style="font-size: 12px; color: var(--slate-500);">0 רישומים</span>
+      </div>
+      <div id="subEntriesListContainer" style="max-height: 220px; overflow-y: auto; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 6px;">
+        <!-- Entries rendered via JS -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
+        <button class="btn btn-primary btn-sm" onclick="closeModal('subEntriesModal')">סיום ואישור</button>
+      </div>
+    </div>
+  </div>
 
   <!-- MODALS -->
 
@@ -2310,7 +2587,17 @@
                   <input type="number" value="${planned}" onchange="updateItemValue('expense', '${item.id}', 'planned', this.value)">
                 </td>
                 <td>
-                  <input type="number" value="${actual}" onchange="updateItemValue('expense', '${item.id}', 'actual', this.value)">
+                  <div style="display: inline-flex; align-items: center; gap: 5px;">
+                    <input type="text" inputmode="decimal" value="${actual}" 
+                           onchange="handleMathOrValueChange('expense', '${item.id}', 'actual', this.value, this)" 
+                           title="אפשר להקליד מספר רגיל, תרגיל חיבור (למשל: 50+80) או להוסיף לסכום הקיים (למשל: +35)"
+                           style="width: 95px; text-align: left; font-weight: 800; font-size: 14px;">
+                    <button class="btn btn-outline btn-sm" style="padding: 6px 9px; border-radius: 7px; border: 1.5px solid #cbd5e1;" 
+                            onclick="openSubEntriesModal('${item.id}')" 
+                            title="חיבור והוספת הוצאות מצטברות לסעיף זה">
+                      <svg class="icon icon-sm" style="color: var(--primary);" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                  </div>
                 </td>
                 <td>
                   <span class="variance-tag ${rowGood ? 'positive' : 'negative'}">
@@ -2929,6 +3216,183 @@
     
     
     
+    
+    // --- CUMULATIVE EXPENSES & MATH EVALUATOR (v8) ---
+    let activeSubModalItemId = null;
+
+    function safeEvalMath(expr, currentValue = 0) {
+      if (!expr || typeof expr !== 'string') return currentValue;
+      let clean = expr.trim();
+
+      // If user typed "+50" or "-20", calculate relative to currentValue
+      if (clean.startsWith('+') || clean.startsWith('-')) {
+        const delta = parseFloat(clean.replace(/,/g, ''));
+        if (!isNaN(delta)) {
+          return Math.max(0, currentValue + delta);
+        }
+      }
+
+      // Check if expression contains basic math characters (+, -, *, /)
+      if (/^[0-9\.\+\-\*/\s\(\),]+$/.test(clean)) {
+        try {
+          clean = clean.replace(/,/g, '');
+          // Basic arithmetic evaluation without arbitrary code execution
+          const result = Function('"use strict"; return (' + clean + ')')();
+          if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+            return Math.max(0, Math.round(result));
+          }
+        } catch (e) {
+          console.warn('Math eval failed:', e);
+        }
+      }
+
+      const num = parseFloat(clean.replace(/,/g, ''));
+      return isNaN(num) ? currentValue : Math.max(0, Math.round(num));
+    }
+
+    function handleMathOrValueChange(type, itemId, field, rawValue, inputElem) {
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      const list = type === 'income' ? mData.income : mData.expense;
+      const item = list.find(i => i.id === itemId);
+      if (!item) return;
+
+      const prevVal = Number(item[field]) || 0;
+      const calculated = safeEvalMath(rawValue, prevVal);
+
+      item[field] = calculated;
+      if (inputElem) {
+        inputElem.value = calculated;
+      }
+
+      saveState();
+      renderActiveMonthData();
+      renderClientBanner();
+    }
+
+    function openSubEntriesModal(itemId) {
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      const item = mData.expense.find(i => i.id === itemId);
+      if (!item) return;
+
+      activeSubModalItemId = itemId;
+      if (!item.entries) item.entries = [];
+
+      document.getElementById('subModalItemTitle').textContent = `פירוט הוצאות: ${item.name}`;
+      document.getElementById('newSubAmount').value = '';
+      document.getElementById('newSubNote').value = '';
+
+      renderSubEntriesList(item);
+      openModal('subEntriesModal');
+      setTimeout(() => {
+        const amtInput = document.getElementById('newSubAmount');
+        if (amtInput) amtInput.focus();
+      }, 150);
+    }
+
+    function renderSubEntriesList(item) {
+      const container = document.getElementById('subEntriesListContainer');
+      const countElem = document.getElementById('subEntriesCount');
+      const totalDisplay = document.getElementById('subModalTotalDisplay');
+      
+      const entries = item.entries || [];
+      const totalFromEntries = entries.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+      // If item has a value larger than entries sum, display the larger one or entries sum
+      const displayTotal = Math.max(Number(item.actual) || 0, totalFromEntries);
+      totalDisplay.textContent = `₪${displayTotal.toLocaleString()}`;
+      countElem.textContent = `${entries.length} רישומים מפורטים`;
+
+      container.innerHTML = '';
+      if (entries.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 20px; text-align: center; color: var(--slate-400); font-size: 13px;">
+            אין עדיין רישומים מפורטים בסעיף זה.<br>
+            הוסף סכום בטופס למעלה כדי לחבר הוצאות יחד!
+          </div>
+        `;
+        return;
+      }
+
+      entries.slice().reverse().forEach((entry) => {
+        const row = document.createElement('div');
+        row.style = 'display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-bottom: 1px solid #e2e8f0; background: #ffffff;';
+        row.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <strong style="font-size: 15px; color: var(--slate-900);">₪${Number(entry.amount).toLocaleString()}</strong>
+            <span style="font-size: 13px; color: var(--slate-600);">${entry.note || 'הוצאה שוטפת'}</span>
+            <span style="font-size: 11px; color: var(--slate-400);">(${entry.date || ''})</span>
+          </div>
+          <button class="btn btn-subtle btn-sm" onclick="deleteSubEntry('${entry.id}')" title="הסר הוצאה זו">
+            <svg class="icon icon-sm" style="color: var(--rose);" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function handleAddSubEntry(event) {
+      if (event) event.preventDefault();
+      if (!activeSubModalItemId) return;
+
+      const amtInput = document.getElementById('newSubAmount');
+      const noteInput = document.getElementById('newSubNote');
+
+      const amount = parseFloat(amtInput.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert('נא להזין סכום חיובי תקין');
+        return;
+      }
+
+      const note = noteInput.value.trim();
+
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      const item = mData.expense.find(i => i.id === activeSubModalItemId);
+      if (!item) return;
+
+      if (!item.entries) item.entries = [];
+
+      const todayStr = new Date().toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' });
+      item.entries.push({
+        id: 'sub_' + Math.random().toString(36).substr(2, 9),
+        amount,
+        note: note || 'הוצאה שוטפת',
+        date: todayStr
+      });
+
+      // Sum all entries and update actual total
+      const totalSum = item.entries.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+      item.actual = totalSum;
+
+      saveState();
+      renderSubEntriesList(item);
+      renderActiveMonthData();
+      renderClientBanner();
+
+      amtInput.value = '';
+      noteInput.value = '';
+      amtInput.focus();
+    }
+
+    function deleteSubEntry(subId) {
+      if (!activeSubModalItemId) return;
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+      const item = mData.expense.find(i => i.id === activeSubModalItemId);
+      if (!item || !item.entries) return;
+
+      item.entries = item.entries.filter(e => e.id !== subId);
+      const totalSum = item.entries.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+      item.actual = totalSum;
+
+      saveState();
+      renderSubEntriesList(item);
+      renderActiveMonthData();
+      renderClientBanner();
+    }
+
     // --- ACCORDION & BUDGET VIEW SWITCHER (v5) ---
     let currentBudgetType = 'expense'; // 'expense' or 'income'
     let allAccordionsOpen = true;
