@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -966,6 +967,12 @@
       </div>
 
       <div class="nav-actions">
+
+      <div id="cloudStatusBadge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;" title="הנתונים מסונכרנים בענן של Supabase בזמן אמת">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+        <span>מסונכרן בענן</span>
+      </div>
+
         <button class="btn btn-subtle btn-sm" onclick="promptChangePassword()" title="שינוי סיסמת כניסה">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           שינוי סיסמה
@@ -1637,15 +1644,16 @@
         saveState();
       }
 
-      renderClientSelector();
-      renderClientBanner();
-      renderActiveMonthData();
-      renderTasksAndGoals();
-      renderBaseline();
+      updateUIAll();
+
+      // Cloud Sync
+      loadCloudState();
+      setupRealtimeListener();
     }
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+      syncToCloud();
     }
 
     function getActiveClient() {
@@ -2472,6 +2480,128 @@
     }
 
     
+    
+    // --- SUPABASE CLOUD INTEGRATION ---
+    const SUPABASE_URL = 'https://dryzmtdrptcwcdhcudzg.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_9GPDl4d90q8_w2-bx81oVg_eBKfuzgs';
+    let supabaseClient = null;
+
+    try {
+      if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log('Supabase client initialized successfully');
+      }
+    } catch (e) {
+      console.error('Supabase init failed:', e);
+    }
+
+    function updateCloudIndicator(synced) {
+      const badge = document.getElementById('cloudStatusBadge');
+      if (!badge) return;
+      if (synced) {
+        badge.style.background = '#ecfdf5';
+        badge.style.color = '#065f46';
+        badge.style.borderColor = '#a7f3d0';
+        badge.innerHTML = '<span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span> <span>מסונכרן בענן</span>';
+      } else {
+        badge.style.background = '#fffbeb';
+        badge.style.color = '#b45309';
+        badge.style.borderColor = '#fde68a';
+        badge.innerHTML = '<span style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> <span>מסנכרן לענן...</span>';
+      }
+    }
+
+    async function loadCloudState() {
+      if (!supabaseClient) return false;
+      try {
+        const { data, error } = await supabaseClient
+          .from('finguide_data')
+          .select('data')
+          .eq('id', 'app_state')
+          .single();
+
+        if (error) {
+          console.warn('Supabase fetch notice:', error.message);
+          return false;
+        }
+
+        if (data && data.data && Array.isArray(data.data.clients)) {
+          appState = data.data;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+          updateUIAll();
+          updateCloudIndicator(true);
+          return true;
+        }
+      } catch (err) {
+        console.error('Error loading from Supabase:', err);
+      }
+      return false;
+    }
+
+    let cloudSyncTimeout = null;
+    function syncToCloud() {
+      if (!supabaseClient) return;
+      updateCloudIndicator(false);
+      clearTimeout(cloudSyncTimeout);
+      cloudSyncTimeout = setTimeout(async () => {
+        try {
+          const { error } = await supabaseClient
+            .from('finguide_data')
+            .upsert({
+              id: 'app_state',
+              data: appState,
+              updated_at: new Date().toISOString()
+            });
+
+          if (error) {
+            console.error('Error pushing to Supabase:', error);
+          } else {
+            updateCloudIndicator(true);
+          }
+        } catch (e) {
+          console.error('Cloud sync error:', e);
+        }
+      }, 500);
+    }
+
+    function setupRealtimeListener() {
+      if (!supabaseClient) return;
+      try {
+        supabaseClient
+          .channel('schema-db-changes')
+          .on(
+            'postgres_changes',
+            {
+              event: '*',
+              schema: 'public',
+              table: 'finguide_data'
+            },
+            (payload) => {
+              if (payload.new && payload.new.data && payload.new.data.clients) {
+                appState = payload.new.data;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+                updateUIAll();
+                updateCloudIndicator(true);
+              }
+            }
+          )
+          .subscribe();
+      } catch (err) {
+        console.warn('Realtime subscription skipped:', err);
+      }
+    }
+
+    function updateUIAll() {
+      renderClientSelector();
+      renderClientBanner();
+      renderActiveMonthData();
+      renderTasksAndGoals();
+      renderBaseline();
+      if (document.getElementById('tab-trends') && document.getElementById('tab-trends').classList.contains('active')) {
+        renderCharts();
+      }
+    }
+
     // --- AUTHENTICATION LOGIC ---
     const AUTH_KEY = 'finguide_auth_session';
     const PASS_KEY = 'finguide_user_pass';
