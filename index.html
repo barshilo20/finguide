@@ -863,9 +863,10 @@
     }
 
     .login-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
     }
 
     .login-card-box {
@@ -926,7 +927,7 @@
         <div id="loginErrorMessage" style="color: var(--rose); font-size: 13px; font-weight: 700; margin-bottom: 12px; display: none;">
           סיסמה שגויה, נסה שוב.
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 11px; font-size: 15px; border-radius: 10px; font-weight: 700;">
+        <button type="submit" onclick="handleLoginSubmit(event)" class="btn btn-primary" style="width: 100%; padding: 11px; font-size: 15px; border-radius: 10px; font-weight: 700;">
           <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
           כניסה למערכת
         </button>
@@ -2468,6 +2469,71 @@
         saveState();
         initApp();
       }
+    }
+
+    
+    // --- AUTHENTICATION LOGIC ---
+    const AUTH_KEY = 'finguide_auth_session';
+    const PASS_KEY = 'finguide_user_pass';
+    const DEFAULT_PASS = '1234';
+
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem(AUTH_KEY);
+      const loginScreen = document.getElementById('loginScreen');
+      if (isAuth === 'true') {
+        if (loginScreen) loginScreen.classList.add('hidden');
+      } else {
+        if (loginScreen) {
+          loginScreen.classList.remove('hidden');
+          const passInput = document.getElementById('loginPasswordInput');
+          if (passInput) {
+            passInput.value = '';
+            setTimeout(() => passInput.focus(), 100);
+          }
+        }
+      }
+    }
+
+    function handleLoginSubmit(event) {
+      if (event) event.preventDefault();
+      const inputElem = document.getElementById('loginPasswordInput');
+      const input = inputElem ? inputElem.value.trim() : '';
+      const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+      const err = document.getElementById('loginErrorMessage');
+
+      if (input === currentPass) {
+        if (err) err.style.display = 'none';
+        sessionStorage.setItem(AUTH_KEY, 'true');
+        const loginScreen = document.getElementById('loginScreen');
+        if (loginScreen) loginScreen.classList.add('hidden');
+      } else {
+        if (err) err.style.display = 'block';
+        if (inputElem) inputElem.select();
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(AUTH_KEY);
+      checkAuth();
+    }
+
+    function promptChangePassword() {
+      const currentPass = localStorage.getItem(PASS_KEY) || DEFAULT_PASS;
+      const oldEntered = prompt('הזן את הסיסמה הנוכחית:');
+      if (oldEntered === null) return;
+      if (oldEntered !== currentPass) {
+        alert('הסיסמה הנוכחית שהוזנה שגויה.');
+        return;
+      }
+
+      const newPass = prompt('הזן סיסמה חדשה:');
+      if (!newPass || newPass.trim().length === 0) {
+        alert('לא הוזנה סיסמה תקינה.');
+        return;
+      }
+
+      localStorage.setItem(PASS_KEY, newPass.trim());
+      alert('הסיסמה שונתה בהצלחה!');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
