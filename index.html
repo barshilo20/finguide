@@ -2175,14 +2175,17 @@
           </div>
 
           <div class="plan-card">
-            <div class="plan-card-header">
+            <div class="plan-card-header" style="margin-bottom: 12px;">
               <h3>
                 <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
                 סיכום פגישה אחרונה והערות מלווה
               </h3>
-              <span id="notesSaveIndicator" style="font-size: 11px; font-weight: 700; color: var(--emerald); display: none;">נשמר אוטומטית</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="notesSaveIndicator" style="font-size: 12px; font-weight: 700; color: var(--emerald); display: none;">✓ נשמר בענן</span>
+                <button class="btn btn-primary btn-sm" onclick="saveClientNotes()">שמור הערות</button>
+              </div>
             </div>
-            <textarea id="mentorNotesArea" rows="6" style="width: 100%; border-radius: 8px;" placeholder="רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב..." oninput="saveClientNotes()"></textarea>
+            <textarea id="mentorNotesArea" rows="6" style="width: 100%; border-radius: 8px; border: 1.5px solid #cbd5e1; padding: 12px; font-size: 14px; font-family: inherit; line-height: 1.5;" placeholder="רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב..." onchange="saveClientNotes()"></textarea>
           </div>
         </div>
 
@@ -2285,7 +2288,7 @@
               <p style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">
                 מה האתגר הבוער ביותר של המשפחה כרגע? (למשל: מינוס כרוני, חוסר תקשורת על כסף, ריבוי הלוואות)
               </p>
-              <textarea id="baseChallenge" rows="4" oninput="updateBaselineData()" placeholder="תאר את הבעיה העיקרית שלשמה פנו לליווי..." style="width: 100%; border: 1.5px solid #fdba74; border-radius: 8px; font-size: 14px; background: #ffffff; padding: 10px;"></textarea>
+              <textarea id="baseChallenge" rows="4" onchange="saveBaselineGoals()" placeholder="תאר את הבעיה העיקרית שלשמה פנו לליווי..." style="width: 100%; border: 1.5px solid #fdba74; border-radius: 8px; font-size: 14px; background: #ffffff; padding: 10px; line-height: 1.5; font-family: inherit;"></textarea>
             </div>
 
             <!-- Vision Panel -->
@@ -2296,8 +2299,13 @@
               <p style="font-size: 12px; color: var(--slate-600); margin-bottom: 12px;">
                 איפה הלקוח רוצה להיות בעוד שנה-שנתיים? (למשל: סגירת כל ההלוואות, חיסכון קבוע של 15% מההכנסה)
               </p>
-              <textarea id="baseVision" rows="4" oninput="updateBaselineData()" placeholder="תאר את היעד וההצלחה הרצויה בסיום התהליך..." style="width: 100%; border: 1.5px solid #86efac; border-radius: 8px; font-size: 14px; background: #ffffff; padding: 10px;"></textarea>
+              <textarea id="baseVision" rows="4" onchange="saveBaselineGoals()" placeholder="תאר את היעד וההצלחה הרצויה בסיום התהליך..." style="width: 100%; border: 1.5px solid #86efac; border-radius: 8px; font-size: 14px; background: #ffffff; padding: 10px; line-height: 1.5; font-family: inherit;"></textarea>
             </div>
+          </div>
+          
+          <div style="padding: 0 22px 18px; display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+            <span id="baselineSaveIndicator" style="font-size: 13px; font-weight: 700; color: var(--emerald); display: none;">✓ נשמר בענן</span>
+            <button class="btn btn-primary btn-sm" onclick="saveBaselineGoals()">שמור מטרות וחזון</button>
           </div>
         </div>
 
@@ -3372,12 +3380,12 @@
       const baseChallengeEl = document.getElementById('baseChallenge');
       const baseVisionEl = document.getElementById('baseVision');
 
-      if (baseOverdraftEl) baseOverdraftEl.value = overdraft || '';
-      if (baseDebtsEl) baseDebtsEl.value = debts || '';
-      if (baseSavingsEl) baseSavingsEl.value = savings || '';
-      if (baseAssetsEl) baseAssetsEl.value = assets || '';
-      if (baseChallengeEl) baseChallengeEl.value = b.challenge || '';
-      if (baseVisionEl) baseVisionEl.value = b.vision || '';
+      if (baseOverdraftEl && document.activeElement !== baseOverdraftEl) baseOverdraftEl.value = overdraft || '';
+      if (baseDebtsEl && document.activeElement !== baseDebtsEl) baseDebtsEl.value = debts || '';
+      if (baseSavingsEl && document.activeElement !== baseSavingsEl) baseSavingsEl.value = savings || '';
+      if (baseAssetsEl && document.activeElement !== baseAssetsEl) baseAssetsEl.value = assets || '';
+      if (baseChallengeEl && document.activeElement !== baseChallengeEl) baseChallengeEl.value = b.challenge || '';
+      if (baseVisionEl && document.activeElement !== baseVisionEl) baseVisionEl.value = b.vision || '';
 
       updateBaselineCalculations(overdraft, debts, savings, assets);
     }
@@ -3400,6 +3408,16 @@
         } else {
           netWorthDisplay.innerHTML = `<span style="color: var(--rose);">-₪${Math.abs(netWorth).toLocaleString()}</span>`;
         }
+      }
+    }
+
+    
+    function saveBaselineGoals() {
+      updateBaselineData();
+      const ind = document.getElementById('baselineSaveIndicator');
+      if (ind) {
+        ind.style.display = 'inline';
+        setTimeout(() => { ind.style.display = 'none'; }, 2500);
       }
     }
 
@@ -4257,25 +4275,19 @@
         }
       }
 
-      // In client view, make notes area read-only
+      // Ensure all textareas and inputs are always editable and functional
       const notesArea = document.getElementById('mentorNotesArea');
       if (notesArea) {
-        if (isClient) {
-          notesArea.setAttribute('readonly', 'true');
-          notesArea.placeholder = 'סיכומי הפגישות וההנחיות מהמלווה יופיעו כאן...';
-        } else {
-          notesArea.removeAttribute('readonly');
-          notesArea.placeholder = 'רשום כאן דגשים מקצועיים, החלטות משותפות מהפגישה ונושאים למעקב...';
-        }
+        notesArea.removeAttribute('readonly');
+        notesArea.removeAttribute('disabled');
       }
 
-      // In client view, disable baseline editing so clients do not overwrite initial agreement
       const baselineInputs = ['baseDebts', 'baseOverdraft', 'baseSavings', 'baseAssets', 'baseChallenge', 'baseVision'];
       baselineInputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-          if (isClient) el.setAttribute('disabled', 'true');
-          else el.removeAttribute('disabled');
+          el.removeAttribute('disabled');
+          el.removeAttribute('readonly');
         }
       });
 
