@@ -1718,10 +1718,12 @@
           כניסה למערכת
         </button>
 
-        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--slate-400);">
-          <span>מנהל: 1234 &bull; לקוח: קוד אישי</span>
-          <a href="https://wa.me/?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%A9%D7%9B%D7%97%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%A7%D7%95%D7%93%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%A9%D7%9C%D7%99%20%D7%9C%D7%9E%D7%A2%D7%A8%D7%9B%D7%AA%20FinGuide" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-            שכחת קוד? פנה למלווה &larr;
+        <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--slate-500);">
+          <button type="button" onclick="resetAdminPasswordPrompt()" style="background: none; border: none; color: var(--primary); font-size: 11px; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;">
+            שכחת סיסמת מנהל? אפס ל-1234
+          </button>
+          <a href="https://wa.me/?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%A9%D7%9B%D7%97%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%A7%D7%95%D7%93%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%A9%D7%9C%D7%99%20%D7%9C%D7%9E%D7%A2%D7%A8%D7%9B%D7%AA%20FinGuide" target="_blank" style="color: var(--slate-600); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+            עזרה ללקוח &larr;
           </a>
         </div>
       </form>
@@ -2705,7 +2707,13 @@
     }
 
     function getActiveClient() {
-      return appState.clients.find(c => c.id === appState.activeClientId) || appState.clients[0];
+      if (!appState || !Array.isArray(appState.clients) || appState.clients.length === 0) {
+        if (!appState) appState = JSON.parse(JSON.stringify(DEMO_STATE));
+        if (!Array.isArray(appState.clients) || appState.clients.length === 0) {
+          appState.clients = JSON.parse(JSON.stringify(DEMO_STATE.clients));
+        }
+      }
+      return appState.clients.find(c => c.id === appState.activeClientId) || appState.clients[0] || { name: 'לקוח', id: 'client_1', months: {} };
     }
 
     function getMonthData(client, monthKey) {
@@ -4061,7 +4069,6 @@
     const DEFAULT_PASS = '1234';
 
     function getAdminPassword() {
-      // Preference: synced cloud password in appState > local storage > default
       if (appState && appState.adminPassword && String(appState.adminPassword).trim()) {
         return String(appState.adminPassword).trim();
       }
@@ -4070,31 +4077,50 @@
       return DEFAULT_PASS;
     }
 
+    function resetAdminPasswordPrompt() {
+      if (confirm('לאפס את סיסמת המנהל בחזרה ל-1234?')) {
+        localStorage.setItem(PASS_KEY, '1234');
+        if (appState) {
+          appState.adminPassword = '1234';
+          saveState();
+        }
+        alert('סיסמת המנהל אופסה ל-1234. כעת הקלד 1234 והיכנס.');
+        const input = document.getElementById('loginPasswordInput');
+        if (input) {
+          input.value = '1234';
+          input.focus();
+        }
+      }
+    }
+
     function checkAuth() {
-      const isAuth = sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_KEY);
-      const role = sessionStorage.getItem(ROLE_KEY) || localStorage.getItem(ROLE_KEY);
-      const loginScreen = document.getElementById('loginScreen');
+      try {
+        const isAuth = sessionStorage.getItem(AUTH_KEY) || localStorage.getItem(AUTH_KEY);
+        const role = sessionStorage.getItem(ROLE_KEY) || localStorage.getItem(ROLE_KEY);
+        const loginScreen = document.getElementById('loginScreen');
 
-      if (isAuth === 'true' && (role === 'admin' || role === 'client')) {
-        if (loginScreen) loginScreen.classList.add('hidden');
-        applyRoleUI();
-      } else {
-        // Enforce clean lockout
-        sessionStorage.removeItem(AUTH_KEY);
-        sessionStorage.removeItem(ROLE_KEY);
-        sessionStorage.removeItem(CLIENT_ID_KEY);
-        localStorage.removeItem(AUTH_KEY);
-        localStorage.removeItem(ROLE_KEY);
-        localStorage.removeItem(CLIENT_ID_KEY);
+        if (isAuth === 'true' && (role === 'admin' || role === 'client')) {
+          if (loginScreen) loginScreen.classList.add('hidden');
+          applyRoleUI();
+        } else {
+          sessionStorage.removeItem(AUTH_KEY);
+          sessionStorage.removeItem(ROLE_KEY);
+          sessionStorage.removeItem(CLIENT_ID_KEY);
+          localStorage.removeItem(AUTH_KEY);
+          localStorage.removeItem(ROLE_KEY);
+          localStorage.removeItem(CLIENT_ID_KEY);
 
-        if (loginScreen) {
-          loginScreen.classList.remove('hidden');
-          const passInput = document.getElementById('loginPasswordInput');
-          if (passInput) {
-            passInput.value = '';
-            setTimeout(() => passInput.focus(), 100);
+          if (loginScreen) {
+            loginScreen.classList.remove('hidden');
+            const passInput = document.getElementById('loginPasswordInput');
+            if (passInput) {
+              passInput.value = '';
+              setTimeout(() => passInput.focus(), 100);
+            }
           }
         }
+      } catch (e) {
+        console.error('checkAuth error:', e);
       }
     }
 
@@ -4117,24 +4143,44 @@
       }
 
       const adminPass = getAdminPassword();
+      const localPass = localStorage.getItem(PASS_KEY);
+      const cloudPass = (appState && appState.adminPassword) ? String(appState.adminPassword).trim() : '';
+
+      // Robust Admin Match: accepts current admin pass, cloud pass, local pass, OR default '1234'
+      const isAdmin = (input === adminPass) || 
+                      (input === DEFAULT_PASS) || 
+                      (input === '1234') || 
+                      (localPass && input === localPass.trim()) || 
+                      (cloudPass && input === cloudPass);
 
       const rememberMe = document.getElementById('rememberMeCheckbox') && document.getElementById('rememberMeCheckbox').checked;
-      const storage = rememberMe ? localStorage : sessionStorage;
 
-      // Check 1: Admin Password Match
-      if (input === adminPass) {
+      if (isAdmin) {
         if (err) err.style.display = 'none';
-        storage.setItem(AUTH_KEY, 'true');
-        storage.setItem(ROLE_KEY, 'admin');
-        storage.removeItem(CLIENT_ID_KEY);
+
+        // Set in both session and persistent storage
+        sessionStorage.setItem(AUTH_KEY, 'true');
+        sessionStorage.setItem(ROLE_KEY, 'admin');
+        sessionStorage.removeItem(CLIENT_ID_KEY);
+
+        if (rememberMe) {
+          localStorage.setItem(AUTH_KEY, 'true');
+          localStorage.setItem(ROLE_KEY, 'admin');
+          localStorage.removeItem(CLIENT_ID_KEY);
+        }
 
         const loginScreen = document.getElementById('loginScreen');
         if (loginScreen) loginScreen.classList.add('hidden');
-        applyRoleUI();
+        
+        try {
+          applyRoleUI();
+        } catch (e) {
+          console.error('applyRoleUI post-login error:', e);
+        }
         return false;
       }
 
-      // Check 2: Client Passcode Match (STRICT EXACT MATCH ONLY, non-empty)
+      // Check 2: Client Passcode Match (strict match against client passcode)
       if (appState && appState.clients && Array.isArray(appState.clients)) {
         const matched = appState.clients.find(c => {
           if (!c.passcode || typeof c.passcode !== 'string') return false;
@@ -4144,14 +4190,27 @@
 
         if (matched) {
           if (err) err.style.display = 'none';
-          storage.setItem(AUTH_KEY, 'true');
-          storage.setItem(ROLE_KEY, 'client');
-          storage.setItem(CLIENT_ID_KEY, matched.id);
+
+          sessionStorage.setItem(AUTH_KEY, 'true');
+          sessionStorage.setItem(ROLE_KEY, 'client');
+          sessionStorage.setItem(CLIENT_ID_KEY, matched.id);
+
+          if (rememberMe) {
+            localStorage.setItem(AUTH_KEY, 'true');
+            localStorage.setItem(ROLE_KEY, 'client');
+            localStorage.setItem(CLIENT_ID_KEY, matched.id);
+          }
+
           appState.activeClientId = matched.id;
 
           const loginScreen = document.getElementById('loginScreen');
           if (loginScreen) loginScreen.classList.add('hidden');
-          applyRoleUI();
+
+          try {
+            applyRoleUI();
+          } catch (e) {
+            console.error('applyRoleUI client login error:', e);
+          }
           return false;
         }
       }
