@@ -1672,6 +1672,159 @@
       color: var(--primary);
     }
 
+  
+    /* --- EXECUTIVE PRINTABLE REPORT STYLING (v13) --- */
+    .report-paper {
+      background: #ffffff;
+      padding: 32px 36px;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      color: #020617;
+      font-family: 'Assistant', 'Rubik', sans-serif;
+      direction: rtl;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .report-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2.5px solid #020617;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+    }
+
+    .report-brand-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #020617;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .report-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .report-kpi-box {
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .report-kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+    }
+
+    .report-kpi-val {
+      font-size: 20px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #020617;
+    }
+
+    .report-section-heading {
+      font-size: 15px;
+      font-weight: 900;
+      color: #020617;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin: 18px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .report-table th {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      font-weight: 800;
+      border: 1px solid #cbd5e1;
+      text-align: right;
+    }
+
+    .report-table td {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .report-task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 13px;
+    }
+
+    .report-footer {
+      border-top: 1.5px solid #cbd5e1;
+      padding-top: 18px;
+      margin-top: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    /* Print Media Rules */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #reportModal,
+      #reportModal * {
+        visibility: visible;
+      }
+
+      #reportModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: 99999;
+      }
+
+      .report-modal-controls {
+        display: none !important;
+      }
+
+      .report-paper {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 10mm 15mm !important;
+        max-width: 100% !important;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1756,6 +1909,12 @@
           <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
           <span>מסונכרן בענן</span>
         </div>
+
+                <!-- Executive Report Button -->
+        <button class="btn btn-primary btn-sm" onclick="openReportModal()" style="font-weight: 800; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+          הפק דוח חודשי (PDF)
+        </button>
 
         <!-- Settings Drawer Trigger Button -->
         <button class="btn btn-outline btn-sm admin-only" onclick="openSettingsDrawer()" style="border: 1.5px solid #cbd5e1; font-weight: 800;">
@@ -2367,6 +2526,117 @@
 
       <div style="display: flex; justify-content: flex-end; margin-top: 18px;">
         <button class="btn btn-primary btn-sm" onclick="closeModal('subEntriesModal')">סיום ואישור</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- MODAL: EXECUTIVE REPORT PREVIEW & PRINT -->
+  <div class="modal-backdrop" id="reportModal" style="z-index: 2000;">
+    <div class="modal-window" style="max-width: 860px; width: 95%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      
+      <!-- Modal Toolbar -->
+      <div class="report-modal-controls" style="padding: 14px 24px; background: #0f172a; color: white; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          תצוגה מקדימה - דוח ליווי ומעקב פיננסי
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="btn btn-emerald btn-sm" onclick="printReport()" style="font-weight: 800;">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            הדפס / שמור כ-PDF
+          </button>
+          <button class="btn btn-subtle btn-sm" onclick="closeModal('reportModal')" style="color: #cbd5e1;">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Printable Report Container -->
+      <div style="padding: 24px; overflow-y: auto; flex: 1; background: #f1f5f9;">
+        <div class="report-paper" id="printableReportDocument">
+          
+          <!-- Report Header -->
+          <div class="report-header-row">
+            <div>
+              <div class="report-brand-title">
+                <span style="display: inline-flex; width: 34px; height: 34px; border-radius: 8px; background: #4f46e5; color: white; align-items: center; justify-content: center; font-size: 17px; font-weight: 900;">F</span>
+                FinGuide | דוח ליווי פיננסי חודשי
+              </div>
+              <div style="font-size: 13px; color: #475569; margin-top: 4px;">
+                פלטפורמת ליווי ומעקב תזרימי אישי
+              </div>
+            </div>
+            <div style="text-align: left;">
+              <strong id="reportClientName" style="font-size: 18px; color: #020617; display: block;">משפחת כהן</strong>
+              <div style="font-size: 12px; color: #475569; margin-top: 2px;">חודש דוח: <strong id="reportMonthStr">ספטמבר 2026</strong></div>
+              <div style="font-size: 11px; color: #64748b;">תאריך הפקה: <span id="reportGenDate">09/09/2026</span></div>
+            </div>
+          </div>
+
+          <!-- Report KPIs -->
+          <div class="report-kpi-grid">
+            <div class="report-kpi-box">
+              <div class="report-kpi-label">סך כל ההכנסות</div>
+              <div class="report-kpi-val" id="reportKpiIncome" style="color: #059669;">₪0</div>
+            </div>
+            <div class="report-kpi-box">
+              <div class="report-kpi-label">סך כל ההוצאות</div>
+              <div class="report-kpi-val" id="reportKpiExpense" style="color: #0f172a;">₪0</div>
+            </div>
+            <div class="report-kpi-box">
+              <div class="report-kpi-label">תזרים נטו</div>
+              <div class="report-kpi-val" id="reportKpiNet">₪0</div>
+            </div>
+            <div class="report-kpi-box">
+              <div class="report-kpi-label">שיעור חיסכון</div>
+              <div class="report-kpi-val" id="reportKpiRate">0%</div>
+            </div>
+          </div>
+
+          <!-- Expenses Category Breakdown Table -->
+          <div class="report-section-heading">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/></svg>
+            סיכום הוצאות חודשיות לפי קטגוריות
+          </div>
+          <table class="report-table" id="reportCategoryTable">
+            <thead>
+              <tr>
+                <th>קטגוריה</th>
+                <th style="width: 140px;">תקציב יעד</th>
+                <th style="width: 140px;">ביצוע בפועל</th>
+                <th style="width: 140px;">עמידה ביעד / פער</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <!-- Action Items for Next Meeting -->
+          <div class="report-section-heading">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            משימות ופעולות לפגישה הבאה
+          </div>
+          <div id="reportTasksContainer" style="margin-bottom: 20px;"></div>
+
+          <!-- Coach Notes & Summary -->
+          <div class="report-section-heading">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            סיכום פגישה והמלצות מקצועיות
+          </div>
+          <div id="reportNotesContent" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.6; min-height: 60px; color: #1e293b;"></div>
+
+          <!-- Report Footer -->
+          <div class="report-footer">
+            <div>
+              <strong>פגישה הבאה: </strong><span id="reportNextMeetingDate">טרם נקבע</span>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-weight: 700; color: #020617;">חתימת המלווה הפיננסי</div>
+              <div style="border-bottom: 1px solid #94a3b8; width: 160px; margin-top: 30px;"></div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
@@ -3694,6 +3964,99 @@
     
     
     
+    
+    // --- EXECUTIVE REPORT & PDF GENERATION (v13) ---
+    function openReportModal() {
+      const client = getActiveClient();
+      const mData = getMonthData(client, appState.activeMonth);
+
+      // Meta
+      document.getElementById('reportClientName').textContent = client.name;
+      document.getElementById('reportMonthStr').textContent = formatMonthHebrew(appState.activeMonth);
+      document.getElementById('reportGenDate').textContent = new Date().toLocaleDateString('he-IL');
+      document.getElementById('reportNextMeetingDate').textContent = client.nextMeeting || 'בתיאום מראש';
+
+      // Totals
+      const totalInc = mData.income.reduce((s, i) => s + (Number(i.actual) || 0), 0);
+      const totalExp = mData.expense.reduce((s, e) => s + (Number(e.actual) || 0), 0);
+      const totalExpPlan = mData.expense.reduce((s, e) => s + (Number(e.planned) || 0), 0);
+      const net = totalInc - totalExp;
+      const rate = totalInc > 0 ? Math.round((net / totalInc) * 100) : 0;
+
+      document.getElementById('reportKpiIncome').textContent = '₪' + totalInc.toLocaleString();
+      document.getElementById('reportKpiExpense').textContent = '₪' + totalExp.toLocaleString();
+
+      const netEl = document.getElementById('reportKpiNet');
+      netEl.textContent = (net >= 0 ? '+' : '') + '₪' + net.toLocaleString();
+      netEl.style.color = net >= 0 ? '#059669' : '#e11d48';
+
+      const rateEl = document.getElementById('reportKpiRate');
+      rateEl.textContent = rate + '%';
+      rateEl.style.color = rate >= 0 ? '#059669' : '#e11d48';
+
+      // Category Breakdown Table
+      const catSums = {};
+      DEFAULT_CATEGORIES.expense.forEach(c => catSums[c] = { planned: 0, actual: 0, count: 0 });
+      mData.expense.forEach(e => {
+        const cat = e.category || 'אחר';
+        if (!catSums[cat]) catSums[cat] = { planned: 0, actual: 0, count: 0 };
+        catSums[cat].planned += (Number(e.planned) || 0);
+        catSums[cat].actual += (Number(e.actual) || 0);
+        catSums[cat].count++;
+      });
+
+      const tbody = document.querySelector('#reportCategoryTable tbody');
+      tbody.innerHTML = '';
+
+      Object.entries(catSums).forEach(([cat, val]) => {
+        if (val.count === 0 && val.actual === 0 && val.planned === 0) return;
+        const diff = val.planned - val.actual;
+        const isGood = diff >= 0;
+        const diffSign = diff >= 0 ? '+' : '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${cat}</strong></td>
+          <td>₪${val.planned.toLocaleString()}</td>
+          <td>₪${val.actual.toLocaleString()}</td>
+          <td style="color: ${isGood ? '#15803d' : '#be123c'}; font-weight: 700;">
+            ${isGood ? '✓ עמד ביעד' : '▲ חריגה'} (${diffSign}₪${diff.toLocaleString()})
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Tasks
+      const tasksDiv = document.getElementById('reportTasksContainer');
+      tasksDiv.innerHTML = '';
+      const tasks = client.tasks || [];
+      if (tasks.length === 0) {
+        tasksDiv.innerHTML = '<div style="color: #64748b; font-size: 12px;">אין משימות מוגדרות לפגישה הבאה.</div>';
+      } else {
+        tasks.forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'report-task-item';
+          div.innerHTML = `
+            <span style="display: inline-block; width: 14px; height: 14px; border: 1.5px solid #64748b; border-radius: 3px; text-align: center; line-height: 12px; font-size: 10px;">${t.completed ? '✓' : ''}</span>
+            <span style="flex: 1; font-weight: 600; text-decoration: ${t.completed ? 'line-through' : 'none'}; color: ${t.completed ? '#94a3b8' : '#0f172a'};">${t.title}</span>
+            <span style="color: #64748b; font-size: 12px;">[${t.owner || 'הלקוח'}]</span>
+            <span style="color: #64748b; font-size: 12px;">יעד: ${t.targetDate || '-'}</span>
+          `;
+          tasksDiv.appendChild(div);
+        });
+      }
+
+      // Notes
+      const notesDiv = document.getElementById('reportNotesContent');
+      notesDiv.textContent = client.notes || 'לא נרשמו הערות מיוחדות לפגישה זו.';
+
+      openModal('reportModal');
+    }
+
+    function printReport() {
+      window.print();
+    }
+
     // --- DRAWER & ABSOLUTE SEPARATION JS (v10) ---
     function openSettingsDrawer() {
       const client = getActiveClient();
